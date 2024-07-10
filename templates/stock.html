@@ -1,0 +1,14 @@
+{{ template "header.html" .}}
+
+<h1 class="title">{{.s.Name}}</h1>
+
+<p><b>Code:</b> {{.s.Code}}</p>
+<p><b>Name:</b> {{.s.Name}}</p>
+<p><b>Currency:</b> {{.s.Currency}}</p>
+
+<p>
+<a href="/edit_stock/{{.s.Id}}" class="button" style="margin-right: 10px">Edit</a>
+<a href="/delete_stock/{{.s.Id}}" class="button">Delete</a>
+</p>
+
+{{ template "footer.html" .}}

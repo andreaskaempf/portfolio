@@ -20,7 +20,7 @@ import (
 // Connect to database
 // Don't forget to "defer db.Close() after calling this
 func dbConnect() *sql.DB {
-	db, err := sql.Open("sqlite3", "./data.db")
+	db, err := sql.Open("sqlite3", "data.db")
 	if err != nil {
 		panic("dbConnect: " + err.Error())
 	}
@@ -79,7 +79,7 @@ func getStock(sid int) *Stock {
 	// Find stock, return nil if not found
 	s := Stock{}
 	q := "select id, code, name, currency from stock where id = $1"
-	err := db.QueryRow(q, sid).Scan(&s.Id, &s.Name, &s.Currency)
+	err := db.QueryRow(q, sid).Scan(&s.Id, &s.Code, &s.Name, &s.Currency)
 	if err != nil {
 		return nil
 	}

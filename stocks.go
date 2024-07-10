@@ -26,7 +26,7 @@ func showStock(c *gin.Context) {
 	// Parse the ID and get the event
 	sid := parseInt(c.Param("id"))
 	s := getStock(sid)
-	if sid < 1 || s == nil {
+	if sid < 0 || s == nil {
 		c.String(http.StatusOK, fmt.Sprintf("Stock %d not found", sid))
 		return
 	}
