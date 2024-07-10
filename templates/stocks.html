@@ -1,0 +1,24 @@
+{{ template "header.html" .}}
+
+<table class="table table-striped">
+  <tr style="border: 1px solid #ccc">
+    <th>Code</th>
+    <th>Name</th>
+    <th>Quantity</th>
+    <th>Price</th>
+    <th>Value</th>
+  </tr>
+  {{ range .stocks }}
+    <tr style="border: 1px solid #ccc">
+      <td><a href="/stock/{{ .Code }}">{{ .Code }}</a></td>
+      <td>{{ .Description }}</td>
+      <td align="right">{{ .Q }}</td>
+      <td align="right">{{ .Price }}</td>
+      <td align="right">{{ .Value }}</td>
+    </tr>
+  {{ end }}
+</table>
+
+<p><a href="/EditStock/0" class="button">Add stock</a></p>
+  
+{{ template "footer.html" .}}
