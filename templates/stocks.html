@@ -4,17 +4,13 @@
   <tr style="border: 1px solid #ccc">
     <th>Code</th>
     <th>Name</th>
-    <th>Quantity</th>
-    <th>Price</th>
-    <th>Value</th>
+    <th>Currency</th>
   </tr>
   {{ range .stocks }}
     <tr style="border: 1px solid #ccc">
-      <td><a href="/stock/{{ .Code }}">{{ .Code }}</a></td>
-      <td>{{ .Description }}</td>
-      <td align="right">{{ .Q }}</td>
-      <td align="right">{{ .Price }}</td>
-      <td align="right">{{ .Value }}</td>
+      <td><a href="/stock/{{ .Id }}">{{ .Code }}</a></td>
+      <td>{{ .Name }}</td>
+      <td>{{ .Currency }}</td>
     </tr>
   {{ end }}
 </table>
