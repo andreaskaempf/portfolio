@@ -1,0 +1,30 @@
+{{ template "header.html" . }}
+
+<h1 class="title">
+{{ if (eq .s.Id 0) }}Create{{ else }}Edit{{ end }}
+ Stock</h1>
+
+<form action="/update_stock" method="post">
+
+  <input type="hidden" name="id" value="{{.s.Id}}" />
+
+  <p><b>Code:</b> 
+    <br/><input type="text" name="code" style="width: 60%;" value="{{.s.Code}}" /></p>
+    
+  <p><b>Name:</b> 
+    <br/><input type="text" name="name" style="width: 60%;" value="{{.s.Name}}" /></p>
+
+  <p><b>Currency:</b> 
+    <select name="currency">
+    {{ $c := .s.Currency }}
+    {{ range .currencies }}
+      <option value="{{.}}" {{ if (eq . $c) }}selected{{ end }}>{{.}}</option>
+    {{ end }}
+    </select></p>
+
+  <br/>
+  <input type="submit" value="Save" class="button" />
+
+</form>
+
+{{ template "footer.html" . }}

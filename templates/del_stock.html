@@ -1,0 +1,11 @@
+{{ template "header.html" .}}
+
+<h1>Delete Stock</h1>
+<p>Are you sure you want to delete <b>{{.s.Name}}</b>?</p>
+
+<p>
+  <a href="/delete_stock/{{.s.Id}}?confirm=yes" class="button" >Yes</a>
+  <a href="/stock/{{.s.Id}}" class="button" tyle="margin-left: 12px">No</a>
+</p>
+
+{{ template "footer.html" .}}

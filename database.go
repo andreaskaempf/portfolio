@@ -87,9 +87,8 @@ func getStock(sid int) *Stock {
 	return &s
 }
 
-/*
-// Update an existing event, or add new
-func addUpdateEvent(e *Event) {
+// Update an existing stock, or add new
+func addUpdateStock(s *Stock) {
 
 	// Connect to database
 	db := dbConnect()
@@ -97,31 +96,29 @@ func addUpdateEvent(e *Event) {
 
 	// Attempt insert or update
 	var err error
-	if e.Id == 0 {
-		q := "insert into event(sdate, edate, name, location, description, active) values ($1, $2, $3, $4, $5, $6)"
-		_, err = db.Exec(q, e.SDate, e.EDate, e.Name, e.Location, e.Description, e.Active)
+	if s.Id == 0 {
+		q := "insert into stock(code, name, currency) values ($1, $2, $3)"
+		_, err = db.Exec(q, s.Code, s.Name, s.Currency)
 	} else {
-		q := "update event set sdate = $1, edate = $2, name = $3, location = $4, description = $5, active = $6 where id = $7"
-		_, err = db.Exec(q, e.SDate, e.EDate, e.Name, e.Location, e.Description, e.Active, e.Id)
+		q := "update stock set code = $1, name = $2, currency = $3 where id = $4"
+		_, err = db.Exec(q, s.Code, s.Name, s.Currency, s.Id)
 	}
 
 	// Check for error
 	if err != nil {
-		panic("addUpdateEvent: " + err.Error())
+		panic("addUpdateStock: " + err.Error())
 	}
 }
 
-// Delete an event by ID
-// TODO: also delete all sessions, assignments, etc.
-func deleteEvent(eid int) {
+// Delete an stock by ID
+// TODO: also delete all child records
+func deleteStock(sid int) {
 
 	db := dbConnect()
 	defer db.Close()
 
-	//_, err1 := db.Exec("delete from assignment where person_id = $1", pid)
-	_, err2 := db.Exec("delete from event where id = $1", eid)
-	if err2 != nil { //}|| err2 != nil {
-		panic("deleteEvent: " + err2.Error()) // + err2.Error())
+	_, err := db.Exec("delete from stock where id = $1", sid)
+	if err != nil {
+		panic("deleteStock: " + err.Error())
 	}
 }
-*/

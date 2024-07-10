@@ -13,6 +13,9 @@ import (
 // Default menu
 var menu = []string{"Home", "Currencies", "Admin"}
 
+// List of currency codes (TODO: in database)
+var currencies = []string{"EUR", "USD", "GBP", "NZD", "AUD"}
+
 func main() {
 
 	// Create router, initialize templates and location of static files
@@ -22,8 +25,11 @@ func main() {
 
 	// Define routes
 	r.GET("/", showStocks)
-	r.GET("/Home", showStocks)
+	r.GET("/stocks", showStocks)
 	r.GET("/stock/:id", showStock)
+	r.GET("/edit_stock/:id", editStock)
+	r.POST("/update_stock", saveStock)
+	r.GET("/delete_stock/:id", delStock)
 
 	// Start server
 	r.Run() // ":8222")
