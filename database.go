@@ -37,7 +37,7 @@ type Stock struct {
 	Currency string
 }
 
-// Get a list of all events, most recent at the top
+// Get a list of all stocks, in alphabetical order
 func getStocks() []Stock {
 
 	// Connect to database
@@ -110,7 +110,7 @@ func addUpdateStock(s *Stock) {
 	}
 }
 
-// Delete an stock by ID
+// Delete a stock by ID
 // TODO: also delete all child records
 func deleteStock(sid int) {
 
