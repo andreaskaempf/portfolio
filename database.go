@@ -12,7 +12,7 @@ import (
 
 	//"sort"
 	//"strings"
-	//"time"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -27,6 +27,11 @@ func dbConnect() *sql.DB {
 	return db
 }
 
+//----------------------------------------------------------------//
+//                              STOCKS                            //
+//----------------------------------------------------------------//
+
+// Any type of security, including shares and funds
 // Stocks: code, type, description, currency
 
 // Record format for one stock
@@ -121,4 +126,53 @@ func deleteStock(sid int) {
 	if err != nil {
 		panic("deleteStock: " + err.Error())
 	}
+}
+
+//----------------------------------------------------------------//
+//                              PRICES                            //
+//----------------------------------------------------------------//
+
+// Price of a stock on a certain date, in its currency
+
+// Record format for a price
+type Price struct {
+	Id       int       // the id of this price record
+	Date     time.Time // the date for this price
+	Stock    int       // id of the stock this price is for
+	Price    float64   // price on this date, in the stock's currency
+	Comments string    // any comments
+}
+
+// Get the prices for a stock
+func getPrices(sid int) []Price {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Execute query to get all prices for this stock, in date order
+	rows, err := db.Query("select id, pdate, price, comments from price where stock_id = $1 order by date", sid)
+	if err != nil {
+		panic("getPrices query: " + err.Error())
+	}
+	defer rows.Close()
+
+	// Collect into a list
+	pp := []Price{}
+	var ds string // buffer for reading date
+	for rows.Next() {
+		p := Price{}
+		err := rows.Scan(&p.Id, &ds, &p.Price, &p.Comments)
+		if err != nil {
+			panic("getPrices next: " + err.Error())
+		}
+		// TODO: convert date
+		pp = append(pp, p)
+	}
+	if rows.Err() != nil {
+		panic("getPricess exit: " + err.Error())
+	}
+
+	// Return list
+	return pp
 }
