@@ -1,0 +1,8 @@
+Delete prices
+Prevent duplicate prices for same day
+Price graph
+Create currencies and rates
+Create transactions (buy/sell n stocks on given date at price x plus commission)
+Dividends
+Holding page: show stocks held, current value, ROI of stock and total
+
