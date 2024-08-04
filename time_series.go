@@ -20,9 +20,16 @@ type TimeSeries []TimeSeriesPoint
 func parseDate(ds string) time.Time {
 
 	// An invalid date (e.g., from parse)
-	// TODO: make global
+	// TODO: make global, or just check for year < 2000
 	InvalidDate := time.Date(1970, 1, 1, 1, 0, 0, 0, time.Local)
 
+	// If there is a space, ditch everything after the space
+	if len(ds) > 10 && (ds[10] == ' ' || ds[10] == 'T') {
+		ds = ds[:10]
+		fmt.Println("ds shorted to", ds)
+	}
+
+	// Parse time and return it
 	t, err := time.Parse("2006-01-02", ds)
 	if err != nil {
 		fmt.Println("Invalid date: ", ds)
@@ -33,7 +40,8 @@ func parseDate(ds string) time.Time {
 
 // Format a date as "yyyy-mm-dd"
 func formatDate(d time.Time) string {
-	return fmt.Sprintf("%d-%02d-%02d", d.Year(), d.Month(), d.Day())
+	//return fmt.Sprintf("%d-%02d-%02d", d.Year(), d.Month(), d.Day())
+	return d.Format("2006-01-02")
 }
 
 // Get price on a certain date, using first date if before, last date if after,

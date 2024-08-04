@@ -31,9 +31,12 @@ func showStock(c *gin.Context) {
 		return
 	}
 
+	// Get all prices for this stock
+	prices := getPrices(sid)
+
 	// Show page
 	c.HTML(http.StatusOK, "stock.html",
-		gin.H{"s": s, "menu": menu})
+		gin.H{"s": s, "prices": prices, "menu": menu})
 }
 
 // Show form to edit a stock (including a new one)

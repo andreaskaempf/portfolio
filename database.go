@@ -8,7 +8,7 @@ package main
 
 import (
 	"database/sql"
-	//"fmt"
+	"fmt"
 
 	//"sort"
 	//"strings"
@@ -143,15 +143,35 @@ type Price struct {
 	Comments string    // any comments
 }
 
-// Get the prices for a stock
+// Get price by price ID
+func getPrice(pid int) *Price {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Find price, return nil if not found
+	p := Price{}
+	q := "select id, stock_id, pdate, price, comments from price where id = $1"
+	err := db.QueryRow(q, pid).Scan(&p.Id, &p.Stock, &p.Date, &p.Price, &p.Comments)
+	if err != nil {
+		return nil
+	}
+
+	return &p
+}
+
+// Get all prices for a stock
 func getPrices(sid int) []Price {
+
+	fmt.Println("getPrices", sid)
 
 	// Connect to database
 	db := dbConnect()
 	defer db.Close()
 
 	// Execute query to get all prices for this stock, in date order
-	rows, err := db.Query("select id, pdate, price, comments from price where stock_id = $1 order by date", sid)
+	rows, err := db.Query("select id, pdate, price, comments from price where stock_id = $1 order by pdate desc", sid)
 	if err != nil {
 		panic("getPrices query: " + err.Error())
 	}
@@ -166,7 +186,9 @@ func getPrices(sid int) []Price {
 		if err != nil {
 			panic("getPrices next: " + err.Error())
 		}
+		//fmt.Println(p)
 		// TODO: convert date
+		p.Date = parseDate(ds)
 		pp = append(pp, p)
 	}
 	if rows.Err() != nil {
@@ -175,4 +197,27 @@ func getPrices(sid int) []Price {
 
 	// Return list
 	return pp
+}
+
+// Update an existing price, or add new
+func addUpdatePrice(p *Price) {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Attempt insert or update
+	var err error
+	if p.Id == 0 {
+		q := "insert into price(stock_id, pdate, price, comments) values ($1, $2, $3, $4)"
+		_, err = db.Exec(q, p.Stock, p.Date, p.Price, p.Comments)
+	} else {
+		q := "update price set pdate = $1, price = $2, comments = $3 where id = $4"
+		_, err = db.Exec(q, p.Date, p.Price, p.Comments, p.Id)
+	}
+
+	// Check for error
+	if err != nil {
+		panic("addUpdatePrice: " + err.Error())
+	}
 }

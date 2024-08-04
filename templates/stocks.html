@@ -1,5 +1,7 @@
 {{ template "header.html" .}}
 
+<h1 class="title">Stocks</h1>
+
 <table class="table table-striped">
   <tr style="border: 1px solid #ccc">
     <th>Code</th>
@@ -15,6 +17,6 @@
   {{ end }}
 </table>
 
-<p><a href="/edit_stock/0" class="button">Add stock</a></p>
+<p><a href="/edit_stock/0" class="button is-primary is-small">Add stock</a></p>
   
 {{ template "footer.html" .}}

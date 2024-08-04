@@ -1,0 +1,26 @@
+{{ template "header.html" . }}
+
+<h1 class="title">
+{{ if (eq .p.Id 0) }}Add{{ else }}Edit{{ end }}
+ Price</h1>
+
+<form action="/update_price" method="post">
+
+  <input type="hidden" name="sid" value="{{.p.Stock}}" />
+  <input type="hidden" name="pid" value="{{.p.Id}}" />
+
+  <p><b>Date:</b> 
+    <br/><input type="text" name="date" style="width: 60%;" value="{{.ds}}" /></p>
+    
+  <p><b>Price:</b> 
+    <br/><input type="text" name="price" style="width: 60%;" value="{{.p.Price}}" /></p>
+    
+  <p><b>Comments:</b> 
+    <br/><input type="text" name="comments" style="width: 60%;" value="{{.p.Comments}}" /></p>
+
+  <br/>
+  <input type="submit" value="Save" class="button" />
+
+</form>
+
+{{ template "footer.html" . }}

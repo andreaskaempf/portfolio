@@ -25,11 +25,14 @@ func main() {
 
 	// Define routes
 	r.GET("/", showStocks)
+	r.GET("/Home", showStocks)
 	r.GET("/stocks", showStocks)
 	r.GET("/stock/:id", showStock)
 	r.GET("/edit_stock/:id", editStock)
 	r.POST("/update_stock", saveStock)
 	r.GET("/delete_stock/:id", delStock)
+	r.GET("/edit_price/:pid", editPrice)
+	r.POST("/update_price", updatePrice)
 
 	// Start server
 	r.Run() // ":8222")
