@@ -126,10 +126,10 @@ func delCurrency(c *gin.Context) {
 	confirm, _ := c.GetQuery("confirm")
 	if confirm == "" { // no confirmation, show form
 		c.HTML(http.StatusOK, "del_currency.html",
-			gin.H{"c": cur, "menu": menu})
+			gin.H{"cur": cur, "menu": menu})
 	} else if confirm == "yes" { // confirmed, delete currency
 		deleteCurrency(cid)
-		c.Redirect(http.StatusFound, "/currencies")
+		c.Redirect(http.StatusFound, "/Currencies")
 	} else { // confirmation denied, back to currency page
 		c.Redirect(http.StatusFound, fmt.Sprintf("/currency/%d", cid))
 	}
