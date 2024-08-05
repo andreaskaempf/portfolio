@@ -1,0 +1,20 @@
+{{ template "header.html" .}}
+
+<h1 class="title">Currencies</h1>
+
+<table class="table table-striped">
+  <tr style="border: 1px solid #ccc">
+    <th>Code</th>
+    <th>Name</th>
+  </tr>
+  {{ range .currencies }}
+    <tr style="border: 1px solid #ccc">
+      <td><a href="/currency/{{ .Id }}">{{ .Code }}</a></td>
+      <td>{{ .Name }}</td>
+    </tr>
+  {{ end }}
+</table>
+
+<p><a href="/edit_currency/0" class="button is-primary is-small">Add currency</a></p>
+  
+{{ template "footer.html" .}}

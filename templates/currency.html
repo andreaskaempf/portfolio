@@ -1,0 +1,36 @@
+{{ template "header.html" .}}
+
+<h1 class="title">Currency {{.cur.Code}}</h1>
+
+<p><b>Code:</b> {{.cur.Code}}</p>
+<p><b>Name:</b> {{.cur.Name}}</p>
+
+<br />
+<p>
+<a href="/edit_currency/{{.cur.Id}}" class="button is-primary is-small" style="margin-right: 10px">Edit</a>
+<a href="/delete_currency/{{.cur.Id}}" class="button is-danger is-small">Delete</a>
+</p>
+
+<hr />
+<h2 class="subtitle">Rate History</h2>
+<p>Rates are multipliers to convert local price to home currency</p>
+
+<table class="table is-striped is-bordered">
+  <thead>
+    <th>Date</th>
+    <th>Price</th>
+    <th>Comments</th>
+  </thead>
+  <tbody>
+  {{ range .rates }}
+  <tr>
+    <td><a href="/edit_rate/{{ .Id }}">{{ .Date.Format "2006-01-02" }}</a></td>
+    <td align="right">{{ .Rate }}</td>
+    <td>--</td>
+  </tr>
+  {{ end }}
+  </tbody>
+</table>
+<a href="/edit_rate/0?cid={{.cur.Id}}" class="button is-primary is-small">Add price</a>
+
+{{ template "footer.html" .}}

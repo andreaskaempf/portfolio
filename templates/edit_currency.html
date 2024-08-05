@@ -1,0 +1,22 @@
+{{ template "header.html" . }}
+
+<h1 class="title">
+{{ if (eq .cur.Id 0) }}Create{{ else }}Edit{{ end }}
+ Currency</h1>
+
+<form action="/update_currency" method="post">
+
+  <input type="hidden" name="cid" value="{{.cur.Id}}" />
+
+  <p><b>Code:</b> 
+    <br/><input type="text" name="code" style="width: 60%;" value="{{.cur.Code}}" /></p>
+    
+  <p><b>Name:</b> 
+    <br/><input type="text" name="name" style="width: 60%;" value="{{.cur.Name}}" /></p>
+
+  <br/>
+  <input type="submit" value="Save" class="button is-small is-primary" />
+
+</form>
+
+{{ template "footer.html" . }}

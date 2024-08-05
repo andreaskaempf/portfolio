@@ -8,10 +8,7 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
-
-	//"sort"
-	//"strings"
+	//"fmt"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -129,7 +126,7 @@ func deleteStock(sid int) {
 }
 
 //----------------------------------------------------------------//
-//                              PRICES                            //
+//                          STOCK PRICES                          //
 //----------------------------------------------------------------//
 
 // Price of a stock on a certain date, in its currency
@@ -163,8 +160,6 @@ func getPrice(pid int) *Price {
 
 // Get all prices for a stock
 func getPrices(sid int) []Price {
-
-	fmt.Println("getPrices", sid)
 
 	// Connect to database
 	db := dbConnect()
@@ -219,5 +214,192 @@ func addUpdatePrice(p *Price) {
 	// Check for error
 	if err != nil {
 		panic("addUpdatePrice: " + err.Error())
+	}
+}
+
+//----------------------------------------------------------------//
+//                          CURRENCIES                            //
+//----------------------------------------------------------------//
+
+// Record format for one currency
+type Currency struct {
+	Id   int
+	Code string
+	Name string
+}
+
+// Get a list of all currencys, in alphabetical order
+func getCurrencies() []Currency {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Execute query to get all currencys, in alphabetical order
+	rows, err := db.Query("select id, code, name from currency order by code")
+	if err != nil {
+		panic("getCurrencies query: " + err.Error())
+	}
+	defer rows.Close()
+
+	// Collect into a list
+	curs := []Currency{}
+	for rows.Next() {
+		cur := Currency{}
+		err := rows.Scan(&cur.Id, &cur.Code, &cur.Name)
+		if err != nil {
+			panic("getCurrencies next: " + err.Error())
+		}
+		curs = append(curs, cur)
+	}
+	if rows.Err() != nil {
+		panic("getCurrencies exit: " + err.Error())
+	}
+
+	// Return list
+	return curs
+}
+
+// Get one currency by id
+func getCurrency(id int) *Currency {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Find currency, return nil if not found
+	cur := Currency{}
+	q := "select id, code, name from currency where id = $1"
+	err := db.QueryRow(q, id).Scan(&cur.Id, &cur.Code, &cur.Name)
+	if err != nil {
+		return nil
+	}
+
+	return &cur
+}
+
+// Update an existing currency, or add new
+func addUpdateCurrency(cur *Currency) {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Attempt insert or update
+	var err error
+	if cur.Id == 0 {
+		q := "insert into currency(code, name) values ($1, $2)"
+		_, err = db.Exec(q, cur.Code, cur.Name)
+	} else {
+		q := "update currency set code = $1, name = $2 where id = $3"
+		_, err = db.Exec(q, cur.Code, cur.Name, cur.Id)
+	}
+
+	// Check for error
+	if err != nil {
+		panic("addUpdateCurrency: " + err.Error())
+	}
+}
+
+// Delete a currency by ID
+// TODO: also delete all child records
+func deleteCurrency(cid int) {
+
+	db := dbConnect()
+	defer db.Close()
+
+	_, err := db.Exec("delete from currency where id = $1", cid)
+	if err != nil {
+		panic("deleteCurrency: " + err.Error())
+	}
+}
+
+//----------------------------------------------------------------//
+//                        CURRENCY RATES                          //
+//----------------------------------------------------------------//
+
+// Price of a currency relative to the home currency, i.e., multiply
+// price by rate the get value in EUR
+
+// Record format for a currency rate
+type Rate struct {
+	Id       int       // the id of this rate record
+	Date     time.Time // the date for this rate
+	Currency int       // id of the currency this price is for
+	Rate     float64   // rate on this date
+}
+
+// Get rate by rate ID
+func getRate(rid int) *Rate {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Find rate, return nil if not found
+	r := Rate{}
+	q := "select id, currency_id, rdate, rate from currency_rate where id = $1"
+	err := db.QueryRow(q, rid).Scan(&r.Id, &r.Currency, &r.Date, &r.Rate)
+	if err != nil {
+		return nil
+	}
+
+	return &r
+}
+
+// Get all rates for a currency
+func getRates(cid int) []Rate {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Execute query to get all rates, in date order
+	rows, err := db.Query("select id, rdate, rate from currency_rate where currency_id = $1 order by rdate desc", cid)
+	if err != nil {
+		panic("getRates query: " + err.Error())
+	}
+	defer rows.Close()
+
+	// Collect into a list
+	rr := []Rate{}
+	var ds string // buffer for reading date
+	for rows.Next() {
+		r := Rate{}
+		err := rows.Scan(&r.Id, &ds, &r.Rate)
+		if err != nil {
+			panic("getRates next: " + err.Error())
+		}
+		r.Date = parseDate(ds)
+		rr = append(rr, r)
+	}
+	if rows.Err() != nil {
+		panic("getRatess exit: " + err.Error())
+	}
+
+	// Return list
+	return rr
+}
+
+// Update an existing rate, or add new
+func addUpdateRate(r *Rate) {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Attempt insert or update
+	var err error
+	if r.Id == 0 {
+		q := "insert into currency_rate(currency_id, rdate, rate) values ($1, $2, $3)"
+		_, err = db.Exec(q, r.Currency, r.Date, r.Rate)
+	} else {
+		q := "update currency_rate set rdate = $1, rate = $2, where id = $3"
+		_, err = db.Exec(q, r.Date, r.Rate, r.Id)
+	}
+
+	// Check for error
+	if err != nil {
+		panic("addUpdateRate: " + err.Error())
 	}
 }

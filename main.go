@@ -23,7 +23,7 @@ func main() {
 	r.LoadHTMLGlob("templates/*")
 	r.Static("/static", "./static")
 
-	// Define routes
+	// Routes for stocks and prices
 	r.GET("/", showStocks)
 	r.GET("/Home", showStocks)
 	r.GET("/stocks", showStocks)
@@ -33,6 +33,15 @@ func main() {
 	r.GET("/delete_stock/:id", delStock)
 	r.GET("/edit_price/:pid", editPrice)
 	r.POST("/update_price", updatePrice)
+
+	// Routes for currencies and rates
+	r.GET("/Currencies", showCurrencies)
+	r.GET("/currency/:id", showCurrency)
+	r.GET("/edit_currency/:id", editCurrency)
+	r.POST("/update_currency", saveCurrency)
+	r.GET("/delete_currency/:id", delCurrency)
+	//r.GET("/edit_rate/:rid", editRate)
+	//r.POST("/update_rate", updateRate)
 
 	// Start server
 	r.Run() // ":8222")
