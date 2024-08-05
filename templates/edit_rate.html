@@ -1,0 +1,23 @@
+{{ template "header.html" . }}
+
+<h1 class="title">
+{{ if (eq .r.Id 0) }}Add{{ else }}Edit{{ end }}
+ Exchange Rate</h1>
+
+<form action="/update_rate" method="post">
+
+  <input type="hidden" name="cid" value="{{.r.Currency}}" />
+  <input type="hidden" name="rid" value="{{.r.Id}}" />
+
+  <p><b>Date:</b> 
+    <br/><input type="text" name="date" style="width: 60%;" value="{{.ds}}" /></p>
+    
+  <p><b>Exchange rate:</b> 
+    <br/><input type="text" name="rate" style="width: 60%;" value="{{.r.Rate}}" /></p>
+    
+  <br/>
+  <input type="submit" value="Save" class="button is-small is-primary" />
+
+</form>
+
+{{ template "footer.html" . }}

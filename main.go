@@ -40,8 +40,8 @@ func main() {
 	r.GET("/edit_currency/:id", editCurrency)
 	r.POST("/update_currency", saveCurrency)
 	r.GET("/delete_currency/:id", delCurrency)
-	//r.GET("/edit_rate/:rid", editRate)
-	//r.POST("/update_rate", updateRate)
+	r.GET("/edit_rate/:rid", editRate)
+	r.POST("/update_rate", updateRate)
 
 	// Start server
 	r.Run() // ":8222")

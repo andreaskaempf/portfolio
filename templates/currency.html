@@ -18,19 +18,17 @@
 <table class="table is-striped is-bordered">
   <thead>
     <th>Date</th>
-    <th>Price</th>
-    <th>Comments</th>
+    <th>Exchange rate</th>
   </thead>
   <tbody>
   {{ range .rates }}
   <tr>
     <td><a href="/edit_rate/{{ .Id }}">{{ .Date.Format "2006-01-02" }}</a></td>
-    <td align="right">{{ .Rate }}</td>
-    <td>--</td>
+    <td align="right">{{ printf "%.2f" .Rate }}</td>
   </tr>
   {{ end }}
   </tbody>
 </table>
-<a href="/edit_rate/0?cid={{.cur.Id}}" class="button is-primary is-small">Add price</a>
+<a href="/edit_rate/0?cid={{.cur.Id}}" class="button is-primary is-small">Add rate</a>
 
 {{ template "footer.html" .}}

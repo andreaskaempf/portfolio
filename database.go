@@ -394,7 +394,7 @@ func addUpdateRate(r *Rate) {
 		q := "insert into currency_rate(currency_id, rdate, rate) values ($1, $2, $3)"
 		_, err = db.Exec(q, r.Currency, r.Date, r.Rate)
 	} else {
-		q := "update currency_rate set rdate = $1, rate = $2, where id = $3"
+		q := "update currency_rate set rdate = $1, rate = $2 where id = $3"
 		_, err = db.Exec(q, r.Date, r.Rate, r.Id)
 	}
 
