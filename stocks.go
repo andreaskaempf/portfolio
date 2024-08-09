@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"net/http"
-
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,12 +31,20 @@ func showStock(c *gin.Context) {
 		return
 	}
 
-	// Get all prices for this stock
+	// Get all transactions and prices for this stock
 	prices := getPrices(sid)
+	transactions := getTransactions(sid)
+
+	// Count up the number of units held
+	var units float64
+	for _, t := range transactions {
+		units += t.Q
+	}
 
 	// Show page
 	c.HTML(http.StatusOK, "stock.html",
-		gin.H{"s": s, "prices": prices, "menu": menu})
+		gin.H{"s": s, "transactions": transactions, "units": units,
+			"prices": prices, "menu": menu})
 }
 
 // Show form to edit a stock (including a new one)
@@ -150,29 +158,29 @@ func editTransaction(c *gin.Context) {
 		c.String(http.StatusNotFound, "Invalid transaction ID")
 		return
 	}
-	
+
 	// If transaction ID is zero, create a "blank" transaction, otherwise
 	// get the transaction. Blank transaction requires a stock to be provided
 	// as query string.
 	var sid int
-	var t := &Transaction{}
+	t := &Transaction{}
 	if tid == 0 {
 		sid_, _ := c.GetQuery("sid")
 		sid = parseInt(sid_)
-		if sid < 0 {
+		if sid <= 0 {
 			c.String(http.StatusNotFound, "Missing stock ID, required for adding transaction")
 			return
 		}
-		t = Transaction{Stock: sid}
+		t = &Transaction{Stock: sid, Date: time.Now()}
 	} else {
 		t = getTransaction(tid)
 		if t == nil {
-			c.String(http.StatusNotFound, "Transaction not found")
+			c.String(http.StatusNotFound, fmt.Sprintf("Transaction %d not found", tid))
 			return
 		}
 		sid = t.Stock
 	}
-	
+
 	// Get the stock as well
 	s := getStock(sid)
 	if s == nil {
@@ -185,52 +193,48 @@ func editTransaction(c *gin.Context) {
 		gin.H{"t": t, "s": s, "menu": menu})
 }
 
-// Process form to update or add an stock
+// Process form to update or add a transaction
 func saveTransaction(c *gin.Context) {
 
-	// Get stock ID (will be 0 to add a stock)
-	sid_, ok := c.GetPostForm("id")
-	if !ok {
-		c.String(http.StatusOK, "saveStock: Missing stock ID")
-		return
-	}
+	// Get transaction and stock ID (tid will be 0 to add)
+	tid_, ok1 := c.GetPostForm("tid")
+	sid_, ok2 := c.GetPostForm("sid")
+	tid := parseInt(tid_)
 	sid := parseInt(sid_)
-	if sid < 0 {
-		c.String(http.StatusOK, "saveStock: Invalid stock ID")
+	if !ok1 || !ok2 || sid < 0 || tid < 0 {
+		c.String(http.StatusOK, "saveStock: Missing or invalid stock and transaction IDs")
 		return
 	}
 
-	// Get the stock or create "blank" stock
-	s := &Stock{}
-	if sid > 0 {
-		s = getStock(sid)
-		if s == nil {
-			c.String(http.StatusOK, "saveStock: stock not found")
+	// Get the transaction or create a "blank" one
+	t := &Transaction{Id: tid, Stock: sid}
+	if tid > 0 {
+		t = getTransaction(tid)
+		if t == nil {
+			c.String(http.StatusNotFound, "saveTransaction: not found")
 			return
 		}
 	}
 
 	// Update the stock with the form inputs
-	s.Code, _ = c.GetPostForm("code")
-	s.Name, _ = c.GetPostForm("name")
-	s.Currency, _ = c.GetPostForm("currency")
+	ds, _ := c.GetPostForm("date")
+	q, _ := c.GetPostForm("q")
+	amount, _ := c.GetPostForm("amount")
+	fees, _ := c.GetPostForm("fees")
 
-	// Some validation
-	s.Code = strings.TrimSpace(s.Code)
-	s.Name = strings.TrimSpace(s.Name)
-	s.Currency = strings.TrimSpace(s.Currency)
-	if len(s.Code) == 0 || len(s.Name) == 0 {
-		c.String(http.StatusOK, "Invalid inputs: cannot be blank")
+	// Convert and validate fields
+	t.Date = parseDate(ds)
+	t.Q = parseFloat(q)
+	t.Amount = parseFloat(amount)
+	t.Fees = parseFloat(fees)
+	if t.Date.Year() < 2000 || t.Q == 0 || t.Amount <= 0 || t.Fees < 0 {
+		c.String(http.StatusOK, "Invalid inputs")
 		return
 	}
 
 	// Create or update person database
-	addUpdateStock(s)
+	addUpdateTransaction(t)
 
-	// Go back to stocks page or list
-	if sid == 0 {
-		c.Redirect(http.StatusFound, "/stocks")
-	} else {
-		c.Redirect(http.StatusFound, fmt.Sprintf("/stock/%d", sid))
-	}
+	// Go back to stock page
+	c.Redirect(http.StatusFound, fmt.Sprintf("/stock/%d", sid))
 }

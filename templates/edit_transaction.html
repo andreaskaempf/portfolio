@@ -1,0 +1,29 @@
+{{ template "header.html" . }}
+
+<h1 class="title">
+{{ if (eq .t.Id 0) }}Create{{ else }}Edit{{ end }}
+ Transaction</h1>
+
+<form action="/update_transaction" method="post">
+
+  <input type="hidden" name="tid" value="{{.t.Id}}" />
+  <input type="hidden" name="sid" value="{{.s.Id}}" />
+
+  <p><b>Date:</b> 
+    <br/><input type="text" name="date" style="width: 60%;" value="{{.t.Date}}" /></p>
+
+  <p><b>Units:</b> (negative to sell)
+    <br /><input type="text" name="q" style="width: 60%;" value="{{.t.Q}}" /></p>
+
+  <p><b>Total amount</b> including fees:
+    <br /><input type="text" name="amount" style="width: 60%;" value="{{.t.Amount}}" /></p>
+    
+  <p><b>Commission</b> and other fees:
+    <br /><input type="text" name="fees" style="width: 60%;" value="{{.t.Fees}}" /></p>
+
+  <br/>
+  <input type="submit" value="Save" class="button is-small is-primary" />
+
+</form>
+
+{{ template "footer.html" . }}

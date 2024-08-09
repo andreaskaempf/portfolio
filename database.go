@@ -8,7 +8,7 @@ package main
 
 import (
 	"database/sql"
-	//"fmt"
+	"fmt"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -217,12 +217,15 @@ func addUpdatePrice(p *Price) {
 	}
 }
 
-// TRANSACTIONS
+//----------------------------------------------------------------//
+//                      BUY/SELL TRANSACTIONS                     //
+//----------------------------------------------------------------//
 
 // Record format for one transaction
 // Amount and fees are in local currency
 // TODO: How do we back out the currency value vs. price?
-type Stock struct {
+// TODO: Add comments
+type Transaction struct {
 	Id     int       // ID of the transaction
 	Stock  int       // ID of the stock
 	Date   time.Time // the date for this transaction
@@ -239,28 +242,37 @@ func getTransactions(sid int) []Transaction {
 	defer db.Close()
 
 	// Execute query to get all transactions
-	rows, err := db.Query("select id, code, name, currency from stock order by code")
+	var err error
+	var rows *sql.Rows
+	if sid > 0 {
+		rows, err = db.Query("select id, stock_id, tdate, q, amount, fees from trans where stock_id == $1 order by tdate", sid)
+	} else {
+		rows, err = db.Query("select id, stock_id, tdate, q, amount, fees from trans order by tdate")
+	}
 	if err != nil {
 		panic("getTransactions query: " + err.Error())
 	}
 	defer rows.Close()
 
 	// Collect into a list
-	ss := []Stock{}
+	tt := []Transaction{}
 	for rows.Next() {
-		s := Stock{}
-		err := rows.Scan(&s.Id, &s.Code, &s.Name, &s.Currency)
+		t := Transaction{}
+		var ds string
+		fmt.Println(rows.Columns())
+		err := rows.Scan(&t.Id, &t.Stock, &ds, &t.Q, &t.Amount, &t.Fees)
 		if err != nil {
-			panic("getStocks next: " + err.Error())
+			panic("getTransactions next: " + err.Error())
 		}
-		ss = append(ss, s)
+		t.Date = parseDate(ds)
+		tt = append(tt, t)
 	}
 	if rows.Err() != nil {
-		panic("getStocks exit: " + err.Error())
+		panic("getTransactions exit: " + err.Error())
 	}
 
 	// Return list
-	return ss
+	return tt
 }
 
 // Get one transaction by id
@@ -270,19 +282,22 @@ func getTransaction(tid int) *Transaction {
 	db := dbConnect()
 	defer db.Close()
 
-	// Find stock, return nil if not found
-	s := Stock{}
-	q := "select id, code, name, currency from stock where id = $1"
-	err := db.QueryRow(q, sid).Scan(&s.Id, &s.Code, &s.Name, &s.Currency)
+	// Find and read transaction, return nil if not found
+	t := Transaction{}
+	var ds string
+	q := "select id, stock_id, tdate, q, amount, fees from trans where id = $1"
+	err := db.QueryRow(q, tid).Scan(&t.Id, &t.Stock, &ds, &t.Q, &t.Amount, &t.Fees)
 	if err != nil {
+		fmt.Println(err)
 		return nil
 	}
+	t.Date = parseDate(ds)
 
-	return &s
+	return &t
 }
 
-// Update an existing stock, or add new
-/*func addUpdateStock(s *Stock) {
+// Update an existing transaction, or add new
+func addUpdateTransaction(t *Transaction) {
 
 	// Connect to database
 	db := dbConnect()
@@ -290,32 +305,32 @@ func getTransaction(tid int) *Transaction {
 
 	// Attempt insert or update
 	var err error
-	if s.Id == 0 {
-		q := "insert into stock(code, name, currency) values ($1, $2, $3)"
-		_, err = db.Exec(q, s.Code, s.Name, s.Currency)
+	if t.Id == 0 {
+		q := "insert into trans(stock_id, tdate, q, amount, fees) values ($1, $2, $3, $4, $5)"
+		_, err = db.Exec(q, t.Stock, formatDate(t.Date), t.Q, t.Amount, t.Fees)
 	} else {
-		q := "update stock set code = $1, name = $2, currency = $3 where id = $4"
-		_, err = db.Exec(q, s.Code, s.Name, s.Currency, s.Id)
+		q := "update trans set tdate = $1, q = $2, amount = $3, fees = $4 where id = $5"
+		_, err = db.Exec(q, formatDate(t.Date), t.Q, t.Amount, t.Fees, t.Id)
 	}
 
 	// Check for error
 	if err != nil {
-		panic("addUpdateStock: " + err.Error())
+		panic("addUpdateTransaction: " + err.Error())
 	}
 }
 
-// Delete a stock by ID
+// Delete a transaction by ID
 // TODO: also delete all child records
-func deleteStock(sid int) {
+func deleteTransaction(tid int) {
 
 	db := dbConnect()
 	defer db.Close()
 
-	_, err := db.Exec("delete from stock where id = $1", sid)
+	_, err := db.Exec("delete from trans where id = $1", tid)
 	if err != nil {
 		panic("deleteStock: " + err.Error())
 	}
-}*/
+}
 
 //----------------------------------------------------------------//
 //                          CURRENCIES                            //

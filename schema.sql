@@ -7,23 +7,23 @@
 -- Ctrl-D to exit
 
 -- A stock or fund
---CREATE TABLE stock (
---    id integer primary key, 
---    code text, 
---    name text, 
---    currency text);
---create index stock_id on stock(id);
--- create index stock_code on stock(code);
+CREATE TABLE stock (
+    id integer primary key, 
+    code text, 
+    name text, 
+    currency text);
+create index stock_id on stock(id);
+ create index stock_code on stock(code);
 
 -- A daily price for a stock
---CREATE TABLE price (
---    id integer primary key, 
---    stock_id integer,
---    pdate date,
---    price float,
---    comments text);
---create index price_id on price(id);
---create index price_stock_id on price(stock_id);
+CREATE TABLE price (
+    id integer primary key, 
+    stock_id integer,
+    pdate date,
+    price float,
+    comments text);
+create index price_id on price(id);
+create index price_stock_id on price(stock_id);
 
 -- A currency
 CREATE TABLE currency (
@@ -40,3 +40,15 @@ CREATE TABLE currency_rate (
     rdate date,
     rate float);
 create index rate_id on currency_rate(id);
+
+-- A buy/sell transaction
+CREATE TABLE trans (
+    id integer primary key, 
+    stock_id integer,
+    tdate date,
+    q float,
+    amount float,
+    fees float,
+    comments text);
+create index trans_id on trans(id);
+create index trans_stock_id on trans(stock_id);

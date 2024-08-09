@@ -4,15 +4,40 @@
 
 <p><b>Code:</b> {{.s.Code}}</p>
 <p><b>Name:</b> {{.s.Name}}</p>
-<p><b>Held:</b> TO DO</p>
+<p><b>Held:</b> {{ .units }}</p>
 <p><b>Currency:</b> {{.s.Currency}}</p>
 
 <br />
 <p>
 <a href="/edit_stock/{{.s.Id}}" class="button is-primary is-small" style="margin-right: 10px">Edit</a>
-<a href="/edit_transaction/0?sid={{.s.Id}}" class="button is-alert is-small" style="margin-right: 10px">Buy/Sell</a>
+<a href="/edit_transaction/0?sid={{.s.Id}}" class="button is-warning is-small" style="margin-right: 10px">Buy/Sell</a>
 <a href="/delete_stock/{{.s.Id}}" disabled class="button is-danger is-small">Delete</a>
 </p>
+
+<hr />
+<h2 class="subtitle">Transaction History</h2>
+
+<table class="table is-striped is-bordered">
+  <thead>
+    <th>Date</th>
+    <th>Units</th>
+    <th>Balance</th>
+    <th>Amount</th>
+    <th>Fees</th>
+  </thead>
+  <tbody>
+  {{ $bal := 0.0 }}
+  {{ range .transactions }}
+  <tr>
+    <td><a href="/edit_transaction/{{ .Id }}">{{ .Date.Format "2006-01-02" }}</a></td>
+    <td align="right">{{.Q}}</td>
+    {{ $bal = add $bal .Q }}
+    <td align="right">{{ $bal }}</td>
+    <td align="right">{{ .Amount }}</td>
+    <td align="right">{{ .Fees }}</td>
+  </tr>
+  {{ end }}
+</table>
 
 <hr />
 <h2 class="subtitle">Price History</h2>

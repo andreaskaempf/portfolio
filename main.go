@@ -6,6 +6,7 @@ import (
 	//"os"
 	//"time"
 	//"net/http"
+	"text/template"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,8 +19,15 @@ var currencies = []string{"EUR", "USD", "GBP", "NZD", "AUD"}
 
 func main() {
 
-	// Create router, initialize templates and location of static files
+	// Create router, define custom functions
 	r := gin.Default()
+	r.FuncMap = template.FuncMap{"mul": func(a, b float64) float64 {
+		return a * b
+	}, "add": func(a, b float64) float64 {
+		return a + b
+	}}
+
+	// Initialize templates and location of static files
 	r.LoadHTMLGlob("templates/*")
 	r.Static("/static", "./static")
 
@@ -36,6 +44,7 @@ func main() {
 
 	// Routes for transactions
 	r.GET("/edit_transaction/:tid", editTransaction)
+	r.POST("/update_transaction", saveTransaction)
 
 	// Routes for currencies and rates
 	r.GET("/Currencies", showCurrencies)
