@@ -34,6 +34,9 @@ func main() {
 	r.GET("/edit_price/:pid", editPrice)
 	r.POST("/update_price", updatePrice)
 
+	// Routes for transactions
+	r.GET("/edit_transaction/:tid", editTransaction)
+
 	// Routes for currencies and rates
 	r.GET("/Currencies", showCurrencies)
 	r.GET("/currency/:id", showCurrency)

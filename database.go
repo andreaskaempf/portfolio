@@ -217,6 +217,106 @@ func addUpdatePrice(p *Price) {
 	}
 }
 
+// TRANSACTIONS
+
+// Record format for one transaction
+// Amount and fees are in local currency
+// TODO: How do we back out the currency value vs. price?
+type Stock struct {
+	Id     int       // ID of the transaction
+	Stock  int       // ID of the stock
+	Date   time.Time // the date for this transaction
+	Q      float64   // the number of shares
+	Amount float64   // the total amount paid, including fees
+	Fees   float64   // commission or fees paid
+}
+
+// Get a list of all transactions, for a stock if argument is nonzero
+func getTransactions(sid int) []Transaction {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Execute query to get all transactions
+	rows, err := db.Query("select id, code, name, currency from stock order by code")
+	if err != nil {
+		panic("getTransactions query: " + err.Error())
+	}
+	defer rows.Close()
+
+	// Collect into a list
+	ss := []Stock{}
+	for rows.Next() {
+		s := Stock{}
+		err := rows.Scan(&s.Id, &s.Code, &s.Name, &s.Currency)
+		if err != nil {
+			panic("getStocks next: " + err.Error())
+		}
+		ss = append(ss, s)
+	}
+	if rows.Err() != nil {
+		panic("getStocks exit: " + err.Error())
+	}
+
+	// Return list
+	return ss
+}
+
+// Get one transaction by id
+func getTransaction(tid int) *Transaction {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Find stock, return nil if not found
+	s := Stock{}
+	q := "select id, code, name, currency from stock where id = $1"
+	err := db.QueryRow(q, sid).Scan(&s.Id, &s.Code, &s.Name, &s.Currency)
+	if err != nil {
+		return nil
+	}
+
+	return &s
+}
+
+// Update an existing stock, or add new
+/*func addUpdateStock(s *Stock) {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Attempt insert or update
+	var err error
+	if s.Id == 0 {
+		q := "insert into stock(code, name, currency) values ($1, $2, $3)"
+		_, err = db.Exec(q, s.Code, s.Name, s.Currency)
+	} else {
+		q := "update stock set code = $1, name = $2, currency = $3 where id = $4"
+		_, err = db.Exec(q, s.Code, s.Name, s.Currency, s.Id)
+	}
+
+	// Check for error
+	if err != nil {
+		panic("addUpdateStock: " + err.Error())
+	}
+}
+
+// Delete a stock by ID
+// TODO: also delete all child records
+func deleteStock(sid int) {
+
+	db := dbConnect()
+	defer db.Close()
+
+	_, err := db.Exec("delete from stock where id = $1", sid)
+	if err != nil {
+		panic("deleteStock: " + err.Error())
+	}
+}*/
+
 //----------------------------------------------------------------//
 //                          CURRENCIES                            //
 //----------------------------------------------------------------//
