@@ -26,7 +26,7 @@ func parseDate(ds string) time.Time {
 	// If there is a space, ditch everything after the space
 	if len(ds) > 10 && (ds[10] == ' ' || ds[10] == 'T') {
 		ds = ds[:10]
-		fmt.Println("ds shorted to", ds)
+		//fmt.Println("ds shorted to", ds)
 	}
 
 	// Parse time and return it

@@ -116,7 +116,7 @@ func saveStock(c *gin.Context) {
 
 	// Go back to stocks page or list
 	if sid == 0 {
-		c.Redirect(http.StatusFound, "/stocks")
+		c.Redirect(http.StatusFound, "/Stocks")
 	} else {
 		c.Redirect(http.StatusFound, fmt.Sprintf("/stock/%d", sid))
 	}
@@ -140,7 +140,7 @@ func delStock(c *gin.Context) {
 			gin.H{"s": s, "menu": menu})
 	} else if confirm == "yes" { // confirmed, delete stock
 		deleteStock(sid)
-		c.Redirect(http.StatusFound, "/stocks")
+		c.Redirect(http.StatusFound, "/Stocks")
 	} else { // confirmation denied, back to stock page
 		c.Redirect(http.StatusFound, fmt.Sprintf("/stock/%d", sid))
 	}

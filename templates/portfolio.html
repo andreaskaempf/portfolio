@@ -1,0 +1,25 @@
+{{ template "header.html" .}}
+
+<h1 class="title">Portfolio on {{ .d.Format "2006-01-02" }}</h1>
+
+<table class="table table-striped">
+  <tr style="border: 1px solid #ccc">
+    <th>Asset</th>
+    <th align="right">Units</th>
+    <th align="right">Avg Cost</th>
+    <th align="right">Value</th>
+    <th align="right">Return</th>
+  </tr>
+  {{ range .holdings }}
+    <tr style="border: 1px solid #ccc">
+      <td><a href="/stock/{{ .Stock.Id }}">{{ .Stock.Code }}</a> ({{ .Stock.Name }})</td>
+      <td align="right">{{ .Units | printf "%.2f" }}</td>
+      <td align="right">{{ .Cost  | printf "%.2f" }}</td>
+      <td align="right">{{ .Value | printf "%.2f" }}</td>
+      <td align="right">{{ .Return| printf "%.1f%%" }}</td>
+    </tr>
+  {{ end }}
+</table>
+
+  
+{{ template "footer.html" .}}

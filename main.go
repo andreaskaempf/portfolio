@@ -12,10 +12,13 @@ import (
 )
 
 // Default menu
-var menu = []string{"Home", "Currencies", "Admin"}
+var menu = []string{"Portfolio", "Stocks", "Currencies"}
 
 // List of currency codes (TODO: in database)
 var currencies = []string{"EUR", "USD", "GBP", "NZD", "AUD"}
+
+// Home currency (TODO: in database)
+var homeCurrency = currencies[0]
 
 func main() {
 
@@ -31,10 +34,13 @@ func main() {
 	r.LoadHTMLGlob("templates/*")
 	r.Static("/static", "./static")
 
+	// Route for home page with portfolio
+	r.GET("/", showPortfolio)
+	r.GET("/Portfolio", showPortfolio)
+
 	// Routes for stocks and prices
-	r.GET("/", showStocks)
 	r.GET("/Home", showStocks)
-	r.GET("/stocks", showStocks)
+	r.GET("/Stocks", showStocks)
 	r.GET("/stock/:id", showStock)
 	r.GET("/edit_stock/:id", editStock)
 	r.POST("/update_stock", saveStock)

@@ -393,6 +393,25 @@ func getCurrency(id int) *Currency {
 	return &cur
 }
 
+// Get one currency by code
+func getCurrencyCode(code string) *Currency {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Find currency, return nil if not found
+	cur := Currency{}
+	q := "select id, code, name from currency where code = $1"
+	err := db.QueryRow(q, code).Scan(&cur.Id, &cur.Code, &cur.Name)
+	if err != nil {
+		fmt.Println("getCurrencyCode: " + err.Error())
+		return nil
+	}
+
+	return &cur
+}
+
 // Update an existing currency, or add new
 func addUpdateCurrency(cur *Currency) {
 
