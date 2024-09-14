@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"fmt"
+	"fmt"
 	//"io"
 	//"os"
 	//"time"
@@ -62,5 +62,6 @@ func main() {
 	r.POST("/update_rate", updateRate)
 
 	// Start server
-	r.Run() // ":8222")
+	fmt.Println("Running on http://localhost:8080")
+	r.Run() // for different port: ":8222")
 }

@@ -17,9 +17,12 @@ func showPortfolio(c *gin.Context) {
 	today := time.Now()
 	holdings := getPortfolio(today)
 
+	// TODO: get cash value today
+	cash := 100.0
+
 	// Show page
 	c.HTML(http.StatusOK, "portfolio.html",
-		gin.H{"d": today, "holdings": holdings, "menu": menu})
+		gin.H{"d": today, "holdings": holdings, "cash": cash, "menu": menu})
 }
 
 // Portfolio holding a particular date

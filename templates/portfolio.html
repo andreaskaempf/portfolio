@@ -2,6 +2,7 @@
 
 <h1 class="title">Portfolio on {{ .d.Format "2006-01-02" }}</h1>
 
+{{ $totStocks := 0.0 }}
 <table class="table table-striped">
   <tr style="border: 1px solid #ccc">
     <th>Asset</th>
@@ -18,7 +19,20 @@
       <td align="right">{{ .Value | printf "%.2f" }}</td>
       <td align="right">{{ .Return| printf "%.1f%%" }}</td>
     </tr>
+    {{ $totStocks = (add $totStocks .Value) }}
   {{ end }}
+    <tr style="border: 1px solid #ccc; font-weight: bold">
+      <td colspan="3">Total stocks</td>
+      <td align="right">{{ $totStocks | printf "%.2f" }}</td>
+    </tr>
+    <tr style="border: 1px solid #ccc; font-weight: bold">
+      <td colspan="3">Cash</td>
+      <td align="right">{{ .cash | printf "%.2f" }}</td>
+    </tr>
+    <tr style="border: 1px solid #ccc; font-weight: bold">
+      <td colspan="3">Total portfolio value</td>
+      <td align="right">{{ (add .cash $totStocks) | printf "%.2f" }}</td>
+    </tr>
 </table>
 
   
