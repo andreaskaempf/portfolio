@@ -1,12 +1,13 @@
 {{ template "header.html" .}}
 
-<h1 class="title">Delete Stock</h1>
-<p>Are you sure you want to delete <b>{{.s.Name}}</b>?</p>
+<h1 class="title">Delete Cash Transaction</h1>
+<p>Are you sure you want to delete 
+  <b>{{ .c.Type }} for {{ .c.Amount }} on {{ fmtDate .c.Date }}?</p>
 
 <br />
 <p>
-  <a href="/delete_stock/{{.s.Id}}?confirm=yes" class="button is-small is-danger" >Yes</a>
-  <a href="/stock/{{.s.Id}}" class="button is-small is-primary" tyle="margin-left: 12px">No</a>
+  <a href="/delete_cash/{{.c.Id}}?confirm=yes" class="button is-small is-danger" >Yes</a>
+  <a href="/cash/{{.c.Id}}" class="button is-small is-primary" tyle="margin-left: 12px">No</a>
 </p>
 
 {{ template "footer.html" .}}

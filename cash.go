@@ -143,7 +143,7 @@ func delCash(c *gin.Context) {
 	// Ask for confirmation, or go ahead and delete if confirmed
 	confirm, _ := c.GetQuery("confirm")
 	if confirm == "" { // no confirmation, show form
-		c.HTML(http.StatusOK, "del_cash.html", gin.H{"t": t, "menu": menu})
+		c.HTML(http.StatusOK, "del_cash.html", gin.H{"c": t, "menu": menu})
 	} else if confirm == "yes" { // confirmed, delete cash
 		deleteCash(tid)
 		c.Redirect(http.StatusFound, "/Cash")

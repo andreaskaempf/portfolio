@@ -391,7 +391,7 @@ func getCashTransaction(tid int) *Cash {
 	// Find and read transaction, return nil if not found
 	c := Cash{}
 	var ds string
-	q := "select select id, tdate, ttype, amount, comments from cash where id = $1"
+	q := "select id, tdate, ttype, amount, comments from cash where id = $1"
 	err := db.QueryRow(q, tid).Scan(&c.Id, &ds, &c.Type, &c.Amount, &c.Comments)
 	if err != nil {
 		fmt.Println(err)
