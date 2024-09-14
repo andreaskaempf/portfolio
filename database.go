@@ -355,7 +355,7 @@ func getCashTransactions() []Cash {
 	// Execute query to get all transactions
 	var err error
 	var rows *sql.Rows
-	rows, err = db.Query("select id, tdate, ttype, amount from cash order by tdate")
+	rows, err = db.Query("select id, tdate, ttype, amount, comments from cash order by tdate")
 	if err != nil {
 		panic("getCashTransactions query: " + err.Error())
 	}
@@ -391,7 +391,7 @@ func getCashTransaction(tid int) *Cash {
 	// Find and read transaction, return nil if not found
 	c := Cash{}
 	var ds string
-	q := "select select id, tdate, ttype, amount from cash where id = $1"
+	q := "select select id, tdate, ttype, amount, comments from cash where id = $1"
 	err := db.QueryRow(q, tid).Scan(&c.Id, &ds, &c.Type, &c.Amount, &c.Comments)
 	if err != nil {
 		fmt.Println(err)
@@ -403,7 +403,7 @@ func getCashTransaction(tid int) *Cash {
 }
 
 // Update an existing transaction, or add new
-/*(func addUpdateTransaction(t *Transaction) {
+func addUpdateCash(t *Cash) {
 
 	// Connect to database
 	db := dbConnect()
@@ -412,30 +412,30 @@ func getCashTransaction(tid int) *Cash {
 	// Attempt insert or update
 	var err error
 	if t.Id == 0 {
-		q := "insert into trans(stock_id, tdate, q, amount, fees) values ($1, $2, $3, $4, $5)"
-		_, err = db.Exec(q, t.Stock, formatDate(t.Date), t.Q, t.Amount, t.Fees)
+		q := "insert into cash(tdate, ttype, amount, comments) values ($1, $2, $3, $4)"
+		_, err = db.Exec(q, formatDate(t.Date), t.Type, t.Amount, t.Comments)
 	} else {
-		q := "update trans set tdate = $1, q = $2, amount = $3, fees = $4 where id = $5"
-		_, err = db.Exec(q, formatDate(t.Date), t.Q, t.Amount, t.Fees, t.Id)
+		q := "update cash set tdate = $1, ttype = $2, amount = $3, comments = $4 where id = $5"
+		_, err = db.Exec(q, formatDate(t.Date), t.Type, t.Amount, t.Comments, t.Id)
 	}
 
 	// Check for error
 	if err != nil {
-		panic("addUpdateTransaction: " + err.Error())
+		panic("addUpdateCash: " + err.Error())
 	}
-}*/
+}
 
-// Delete a transaction by ID
-/*func deleteTransaction(tid int) {
+// Delete a cash transaction by ID
+func deleteCash(tid int) {
 
 	db := dbConnect()
 	defer db.Close()
 
-	_, err := db.Exec("delete from trans where id = $1", tid)
+	_, err := db.Exec("delete from cash where id = $1", tid)
 	if err != nil {
-		panic("deleteStock: " + err.Error())
+		panic("deleteCash: " + err.Error())
 	}
-}*/
+}
 
 //----------------------------------------------------------------//
 //                          CURRENCIES                            //

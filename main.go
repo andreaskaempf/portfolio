@@ -4,7 +4,7 @@ import (
 	"fmt"
 	//"io"
 	//"os"
-	//"time"
+	"time"
 	//"net/http"
 	"text/template"
 
@@ -17,6 +17,9 @@ var menu = []string{"Portfolio", "Stocks", "Cash", "Currencies"}
 // List of currency codes (TODO: in database)
 var currencies = []string{"EUR", "USD", "GBP", "NZD", "AUD"}
 
+// List of cash transaction types
+var cashTypes = []string{"Deposit", "Withdrawal"}
+
 // Home currency (TODO: in database)
 var homeCurrency = currencies[0]
 
@@ -28,6 +31,8 @@ func main() {
 		return a * b
 	}, "add": func(a, b float64) float64 {
 		return a + b
+	}, "fmtDate": func(d time.Time) string {
+		return formatDate(d)
 	}}
 
 	// Initialize templates and location of static files
@@ -53,7 +58,11 @@ func main() {
 	r.POST("/update_transaction", saveTransaction)
 
 	// Cash pages
-	r.GET("/Cash", showCash)
+	r.GET("/Cash", showCashPage)
+	r.GET("/cash/:id", showCash)
+	r.GET("/edit_cash/:id", editCash)
+	r.POST("/update_cash", saveCash)
+	r.GET("/delete_cash/:id", delCash)
 
 	// Routes for currencies and rates
 	r.GET("/Currencies", showCurrencies)

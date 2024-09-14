@@ -2,10 +2,12 @@
 
 <h1 class="title">Cash to {{ .d.Format "2006-01-02" }}</h1>
 
-<p style="margin-bottom: 12px; font-weight: bold">Balance: {{ .balance | printf "%.2f" }}</p>
+<p style="margin-bottom: 24px; font-weight: bold">
+  Balance: {{ .balance | printf "%.2f" }}
+  <a href="/edit_cash/0" class="button is-primary is-small" style="float: right">Add transaction</a></p>
 
 {{ $bal := 0.0 }}
-<table class="table table-striped">
+<table class="table table-striped" style="width: 100%">
   <tr style="border: 1px solid #ccc">
     <th>Date</th>
     <th>Type</th>
@@ -17,10 +19,10 @@
   {{ range .transactions }}
     {{ $bal = (add $bal .Amount) }}
     <tr style="border: 1px solid #ccc">
-      <td><a href="/cash/{{ 99 }}">{{ .Date }}</a> ({{ .Date }})</td>
+      <td><a href="/cash/{{ .Id }}">{{ fmtDate .Date }}</a></td>
       <td>{{ .Type }}</td>
-      <td align="right">{{ if (gt .Amount 0) }}{{ .Amount  | printf "%.2f" }}{{ end }}</td>
-      <td align="right">{{ if (lt .Amount 0) }}{{ .Amount  | printf "%.2f" }}{{ end }}</td>
+      <td align="right">{{ if (gt .Amount 0.0) }}{{ .Amount  | printf "%.2f" }}{{ end }}</td>
+      <td align="right">{{ if (lt .Amount 0.0) }}{{ (mul .Amount -1)  | printf "%.2f" }}{{ end }}</td>
       <td align="right">{{ $bal | printf "%.2f" }}</td>
       <td align="right">{{ .Comments }}</td>
     </tr>

@@ -1,0 +1,16 @@
+{{ template "header.html" .}}
+
+<h1 class="title">Cash Transaction</h1>
+
+<p><b>Date:</b> {{.c.Date}}</p>
+<p><b>Type:</b> {{.c.Type}}</p>
+<p><b>Amount:</b> {{ .c.Amount }}</p>
+<p><b>Comments:</b> {{.c.Comments}}</p>
+
+<br />
+<p>
+<a href="/edit_cash/{{.c.Id}}" class="button is-primary is-small" style="margin-right: 10px">Edit</a>
+<a href="/delete_cash/{{.c.Id}}" disabled class="button is-danger is-small">Delete</a>
+</p>
+
+{{ template "footer.html" .}}

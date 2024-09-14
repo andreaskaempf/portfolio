@@ -1,0 +1,35 @@
+{{ template "header.html" . }}
+
+<h1 class="title">
+{{ if (eq .s.Id 0) }}Create{{ else }}Edit{{ end }}
+ Cash Transaction</h1>
+
+<form action="/update_cash" method="post">
+
+  <input type="hidden" name="id" value="{{.c.Id}}" />
+
+  <p style="margin-bottom: 12px"><b>Date:</b> 
+    <input type="text" name="date" style="width: 20%;" value="{{ fmtDate .c.Date }}" /></p>
+  
+  {{ $t := .c.Type }}
+  {{ if (eq $t "")}}
+    {{ $t = "Deposit"}}
+  {{ end }}
+  
+  <p style="margin-bottom: 12px"><b>Type:</b> 
+    {{ range .types }}
+      <input type="radio" name="type" value="{{.}}" {{ if (eq . $t) }}checked="true"{{ end }} /> {{.}}
+    {{ end }}
+    </p>
+
+ <p style="margin-bottom: 12px"><b>Amount:</b> 
+    <input type="text" name="amount" style="width: 20%;" value="{{.c.Amount}}" /></p>
+    
+ <p style="margin-bottom: 12px"><b>Comments:</b><br/>
+    <textarea name="comments" style="width: 100%; height: 100px">{{.c.Comments}}</textarea></p>
+
+  <input type="submit" value="Save" class="button is-small is-primary" />
+
+</form>
+
+{{ template "footer.html" . }}

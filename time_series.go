@@ -38,9 +38,13 @@ func parseDate(ds string) time.Time {
 	return t
 }
 
+// Convenience function to check if date is value
+func validDate(d time.Time) bool {
+	return d.Year() != 1970
+}
+
 // Format a date as "yyyy-mm-dd"
 func formatDate(d time.Time) string {
-	//return fmt.Sprintf("%d-%02d-%02d", d.Year(), d.Month(), d.Day())
 	return d.Format("2006-01-02")
 }
 
