@@ -1,0 +1,30 @@
+{{ template "header.html" .}}
+
+<h1 class="title">Cash to {{ .d.Format "2006-01-02" }}</h1>
+
+<p style="margin-bottom: 12px; font-weight: bold">Balance: {{ .balance | printf "%.2f" }}</p>
+
+{{ $bal := 0.0 }}
+<table class="table table-striped">
+  <tr style="border: 1px solid #ccc">
+    <th>Date</th>
+    <th>Type</th>
+    <th align="right">Deposit</th>
+    <th align="right">Withdraw</th>
+    <th align="right">Balance</th>
+    <th align="right">Comments</th>
+  </tr>
+  {{ range .transactions }}
+    {{ $bal = (add $bal .Amount) }}
+    <tr style="border: 1px solid #ccc">
+      <td><a href="/cash/{{ 99 }}">{{ .Date }}</a> ({{ .Date }})</td>
+      <td>{{ .Type }}</td>
+      <td align="right">{{ if (gt .Amount 0) }}{{ .Amount  | printf "%.2f" }}{{ end }}</td>
+      <td align="right">{{ if (lt .Amount 0) }}{{ .Amount  | printf "%.2f" }}{{ end }}</td>
+      <td align="right">{{ $bal | printf "%.2f" }}</td>
+      <td align="right">{{ .Comments }}</td>
+    </tr>
+  {{ end }}
+</table>
+
+{{ template "footer.html" .}}
