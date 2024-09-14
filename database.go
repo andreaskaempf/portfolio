@@ -333,6 +333,112 @@ func deleteTransaction(tid int) {
 }
 
 //----------------------------------------------------------------//
+//                            DIVIDENDS                           //
+//----------------------------------------------------------------//
+
+// Record format for one dividend
+type Dividend struct {
+	Id       int       // ID of the transaction
+	Stock    int       // ID of the stock
+	Date     time.Time // the date for this transaction
+	Amount   float64   // the total amount paid, including fees
+	Comments string
+}
+
+// Get a list of all dividends for a stock
+func getDividends(sid int) []Dividend {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Execute query to get all transactions
+	var err error
+	var rows *sql.Rows
+	rows, err = db.Query("select id, stock_id, tdate, amount, comments from dividend where stock_id == $1 order by tdate", sid)
+	if err != nil {
+		panic("getDividends query: " + err.Error())
+	}
+	defer rows.Close()
+
+	// Collect into a list
+	dd := []Dividend{}
+	for rows.Next() {
+		d := Dividend{}
+		var ds string
+		fmt.Println(rows.Columns())
+		err := rows.Scan(&d.Id, &d.Stock, &ds, &d.Amount, &d.Comments)
+		if err != nil {
+			panic("getDividends next: " + err.Error())
+		}
+		d.Date = parseDate(ds)
+		dd = append(tt, d)
+	}
+	if rows.Err() != nil {
+		panic("getDividends exit: " + err.Error())
+	}
+
+	// Return list
+	return dd
+}
+
+// Get one dividend by id
+func getDividend(did int) *Dividend {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Find and read transaction, return nil if not found
+	d := Dividend{}
+	var ds string
+	q := "select id, stock_id, tdate, amount, comments from dividend where id = $1"
+	err := db.QueryRow(q, did).Scan(&d.Id, &d.Stock, &ds, &d.Amount, &d.Comments)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	d.Date = parseDate(ds)
+
+	return &d
+}
+
+// Update an existing dividend, or add new
+func addUpdateDividend(d *Dividend) {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Attempt insert or update
+	var err error
+	if d.Id == 0 {
+		q := "insert into dividend(stock_id, tdate, amount, comments) values ($1, $2, $3, $4)"
+		_, err = db.Exec(q, d.Stock, formatDate(d.Date), d.Amount, d.Comments)
+	} else {
+		q := "update dividend set tdate = $1, amount = $2, comments = $3 where id = $4"
+		_, err = db.Exec(q, formatDate(d.Date), d.Amount, d.Comments, d.Id)
+	}
+
+	// Check for error
+	if err != nil {
+		panic("addUpdateTransaction: " + err.Error())
+	}
+}
+
+// Delete a dividend by ID
+func deleteDividend(did int) {
+
+	db := dbConnect()
+	defer db.Close()
+
+	_, err := db.Exec("delete from dividend where id = $1", did)
+	if err != nil {
+		panic("deleteDividend: " + err.Error())
+	}
+}
+
+//----------------------------------------------------------------//
 //                        CASH TRANSACTIONS                       //
 //----------------------------------------------------------------//
 

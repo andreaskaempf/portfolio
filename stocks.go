@@ -1,3 +1,5 @@
+// Stocks, including buy/sell transactions and dividends
+
 package main
 
 import (
@@ -8,6 +10,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+//-----------------------------------------------------------------//
+//                             STOCKS                              //
+//-----------------------------------------------------------------//
 
 // Show list of all stocks
 func showStocks(c *gin.Context) {
@@ -146,6 +152,10 @@ func delStock(c *gin.Context) {
 	}
 }
 
+//-----------------------------------------------------------------//
+//                      BUY/SELL TRANSACTIONS                      //
+//-----------------------------------------------------------------//
+
 // Edit/create a transaction for a stock. Edits the transaction if an ID
 // is provided. If zero, adds a transaction for the stock ID expected in
 // the query string.
@@ -238,3 +248,9 @@ func saveTransaction(c *gin.Context) {
 	// Go back to stock page
 	c.Redirect(http.StatusFound, fmt.Sprintf("/stock/%d", sid))
 }
+
+//-----------------------------------------------------------------//
+//                           DIVIDENDS                             //
+//-----------------------------------------------------------------//
+
+// TODO

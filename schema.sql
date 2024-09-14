@@ -53,6 +53,18 @@ CREATE TABLE trans (
 create index trans_id on trans(id);
 create index trans_stock_id on trans(stock_id);
 
+-- A dividend received for a stock, assumed to be an aggregate
+-- amount (rather than per share), and in local currency (even if
+-- the stock is in a foreign currency)
+CREATE TABLE dividend (
+    id integer primary key, 
+    stock_id integer,
+    tdate date,
+    amount float,
+    comments text);
+create index div_id on dividend(id);
+create index div_stock_id on dividend(stock_id);
+
 -- A cash transaction (does not include buy/sell as these are implicit)
 CREATE TABLE cash (
     id integer primary key, 
