@@ -12,7 +12,7 @@ import (
 )
 
 // Default menu
-var menu = []string{"Portfolio", "Stocks", "Currencies"}
+var menu = []string{"Portfolio", "Stocks", "Cash", "Currencies"}
 
 // List of currency codes (TODO: in database)
 var currencies = []string{"EUR", "USD", "GBP", "NZD", "AUD"}
@@ -51,6 +51,9 @@ func main() {
 	// Routes for transactions
 	r.GET("/edit_transaction/:tid", editTransaction)
 	r.POST("/update_transaction", saveTransaction)
+
+	// Cash pages
+	r.GET("/Cash", showCash)
 
 	// Routes for currencies and rates
 	r.GET("/Currencies", showCurrencies)
