@@ -52,3 +52,13 @@ CREATE TABLE trans (
     comments text);
 create index trans_id on trans(id);
 create index trans_stock_id on trans(stock_id);
+
+-- A cash transaction (does not include buy/sell as these are implicit)
+CREATE TABLE cash (
+    id integer primary key, 
+    tdate date,
+    ttype text, -- deposit, withdraw, dividend
+    amount float,
+    comments text);
+create index cash_id on cash(id);
+

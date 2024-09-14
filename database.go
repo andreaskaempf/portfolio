@@ -333,6 +333,111 @@ func deleteTransaction(tid int) {
 }
 
 //----------------------------------------------------------------//
+//                        CASH TRANSACTIONS                       //
+//----------------------------------------------------------------//
+
+// Record format for one cash transaction
+type Cash struct {
+	Id       int       // ID of the transaction
+	Date     time.Time // the date for this transaction
+	Type     string    // "deposit", "withdraw"
+	Amount   float64   // + for deposit, - for withdraw
+	Comments string
+}
+
+// Get a list of all cash transactions
+func getCashTransactions() []Cash {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Execute query to get all transactions
+	var err error
+	var rows *sql.Rows
+	rows, err = db.Query("select id, tdate, ttype, amount from cash order by tdate")
+	if err != nil {
+		panic("getCashTransactions query: " + err.Error())
+	}
+	defer rows.Close()
+
+	// Collect into a list
+	cc := []Cash{}
+	for rows.Next() {
+		c := Cash{}
+		var ds string
+		err := rows.Scan(&c.Id, &ds, &c.Type, &c.Amount, &c.Comments)
+		if err != nil {
+			panic("getCashTransactions next: " + err.Error())
+		}
+		c.Date = parseDate(ds)
+		cc = append(cc, c)
+	}
+	if rows.Err() != nil {
+		panic("getCashTransactions exit: " + err.Error())
+	}
+
+	// Return list
+	return cc
+}
+
+// Get one cash transaction by id
+func getCashTransaction(tid int) *Cash {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Find and read transaction, return nil if not found
+	c := Cash{}
+	var ds string
+	q := "select select id, tdate, ttype, amount from cash where id = $1"
+	err := db.QueryRow(q, tid).Scan(&c.Id, &ds, &c.Type, &c.Amount, &c.Comments)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	c.Date = parseDate(ds)
+
+	return &c
+}
+
+// Update an existing transaction, or add new
+/*(func addUpdateTransaction(t *Transaction) {
+
+	// Connect to database
+	db := dbConnect()
+	defer db.Close()
+
+	// Attempt insert or update
+	var err error
+	if t.Id == 0 {
+		q := "insert into trans(stock_id, tdate, q, amount, fees) values ($1, $2, $3, $4, $5)"
+		_, err = db.Exec(q, t.Stock, formatDate(t.Date), t.Q, t.Amount, t.Fees)
+	} else {
+		q := "update trans set tdate = $1, q = $2, amount = $3, fees = $4 where id = $5"
+		_, err = db.Exec(q, formatDate(t.Date), t.Q, t.Amount, t.Fees, t.Id)
+	}
+
+	// Check for error
+	if err != nil {
+		panic("addUpdateTransaction: " + err.Error())
+	}
+}*/
+
+// Delete a transaction by ID
+/*func deleteTransaction(tid int) {
+
+	db := dbConnect()
+	defer db.Close()
+
+	_, err := db.Exec("delete from trans where id = $1", tid)
+	if err != nil {
+		panic("deleteStock: " + err.Error())
+	}
+}*/
+
+//----------------------------------------------------------------//
 //                          CURRENCIES                            //
 //----------------------------------------------------------------//
 
