@@ -372,7 +372,7 @@ func getDividends(sid int) []Dividend {
 			panic("getDividends next: " + err.Error())
 		}
 		d.Date = parseDate(ds)
-		dd = append(tt, d)
+		dd = append(dd, d)
 	}
 	if rows.Err() != nil {
 		panic("getDividends exit: " + err.Error())

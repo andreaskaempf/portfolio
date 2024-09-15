@@ -11,8 +11,28 @@
 <p>
 <a href="/edit_stock/{{.s.Id}}" class="button is-primary is-small" style="margin-right: 10px">Edit</a>
 <a href="/edit_transaction/0?sid={{.s.Id}}" class="button is-warning is-small" style="margin-right: 10px">Buy/Sell</a>
+<a href="/edit_dividend/0?sid={{.s.Id}}" class="button is-link is-small" style="margin-right: 10px">Dividend</a>
 <a href="/delete_stock/{{.s.Id}}" disabled class="button is-danger is-small">Delete</a>
 </p>
+
+<hr />
+<h2 class="subtitle">Dividends</h2>
+
+<table class="table is-striped is-bordered">
+  <thead>
+    <th>Date</th>
+    <th>Amount</th>
+    <th>Comments</th>
+  </thead>
+  <tbody>
+  {{ range .dividends }}
+  <tr>
+    <td><a href="/edit_dividend/{{ .Id }}">{{ .Date.Format "2006-01-02" }}</a></td>
+    <td align="right">{{ .Amount }}</td>
+    <td align="right">{{ .Comments }}</td>
+  </tr>
+  {{ end }}
+</table>
 
 <hr />
 <h2 class="subtitle">Transaction History</h2>

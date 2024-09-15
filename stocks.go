@@ -37,9 +37,10 @@ func showStock(c *gin.Context) {
 		return
 	}
 
-	// Get all transactions and prices for this stock
+	// Get all transactions, dividends and prices for this stock
 	prices := getPrices(sid)
 	transactions := getTransactions(sid)
+	dividends := getDividends(sid)
 
 	// Count up the number of units held
 	var units float64
@@ -50,7 +51,7 @@ func showStock(c *gin.Context) {
 	// Show page
 	c.HTML(http.StatusOK, "stock.html",
 		gin.H{"s": s, "transactions": transactions, "units": units,
-			"prices": prices, "menu": menu})
+			"prices": prices, "dividends": dividends, "menu": menu})
 }
 
 // Show form to edit a stock (including a new one)
@@ -253,4 +254,91 @@ func saveTransaction(c *gin.Context) {
 //                           DIVIDENDS                             //
 //-----------------------------------------------------------------//
 
-// TODO
+// Edit/create a dividend for a stock. Edits the dividend if an ID
+// is provided. If zero, adds a transaction for the stock ID expected in
+// the query string.
+func editDividend(c *gin.Context) {
+
+	// Get dividend ID (will be 0 to add)
+	did := parseInt(c.Param("did"))
+	if did < 0 {
+		c.String(http.StatusNotFound, "Invalid dividend ID")
+		return
+	}
+
+	// If dividend ID is zero, create a "blank" dividend, otherwise
+	// get the dividend. Blank dividend requires a stock to be provided
+	// as query string.
+	var sid int
+	d := &Dividend{}
+	if did == 0 {
+		sid_, _ := c.GetQuery("sid")
+		sid = parseInt(sid_)
+		if sid <= 0 {
+			c.String(http.StatusNotFound, "Missing stock ID, required for adding dividend")
+			return
+		}
+		d = &Dividend{Stock: sid, Date: time.Now()} // TODO: why not just reuse blank dividend?
+	} else {
+		d = getDividend(did)
+		if d == nil {
+			c.String(http.StatusNotFound, fmt.Sprintf("Dividend %d not found", did))
+			return
+		}
+		sid = d.Stock
+	}
+
+	// Get the stock as well
+	s := getStock(sid)
+	if s == nil {
+		c.String(http.StatusNotFound, "Stock not found")
+		return
+	}
+
+	// Show the form to edit dividend
+	c.HTML(http.StatusOK, "edit_dividend.html",
+		gin.H{"d": d, "s": s, "menu": menu})
+}
+
+// Process form to update or add a transaction
+func saveDividend(c *gin.Context) {
+
+	// Get dividend and stock ID (did will be 0 to add)
+	did_, ok1 := c.GetPostForm("did")
+	sid_, ok2 := c.GetPostForm("sid")
+	did := parseInt(did_)
+	sid := parseInt(sid_)
+	if !ok1 || !ok2 || sid < 0 || did < 0 {
+		c.String(http.StatusOK, "saveDividend: Missing or invalid stock and dividend IDs")
+		return
+	}
+
+	// Get the dividend or create a "blank" one
+	d := &Dividend{Id: did, Stock: sid}
+	if did > 0 {
+		d = getDividend(did)
+		if d == nil {
+			c.String(http.StatusNotFound, "saveDividend: not found")
+			return
+		}
+	}
+
+	// Update the dividend with the form inputs
+	ds, _ := c.GetPostForm("date")
+	amount, _ := c.GetPostForm("amount")
+	d.Comments, _ = c.GetPostForm("comments")
+
+	// Convert and validate fields
+	d.Date = parseDate(ds)
+	d.Amount = parseFloat(amount)
+	if !validDate(d.Date) || d.Amount <= 0 {
+		c.String(http.StatusOK, "Invalid inputs")
+		return
+	}
+
+	// Create or update person database
+	addUpdateDividend(d)
+
+	// Go back to stock page
+	c.Redirect(http.StatusFound, fmt.Sprintf("/stock/%d", sid))
+}

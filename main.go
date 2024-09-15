@@ -50,12 +50,18 @@ func main() {
 	r.GET("/edit_stock/:id", editStock)
 	r.POST("/update_stock", saveStock)
 	r.GET("/delete_stock/:id", delStock)
+
+	// Routes for stock prices
 	r.GET("/edit_price/:pid", editPrice)
 	r.POST("/update_price", updatePrice)
 
-	// Routes for transactions
+	// Routes for buy/sell transactions
 	r.GET("/edit_transaction/:tid", editTransaction)
 	r.POST("/update_transaction", saveTransaction)
+
+	// Routes for dividends
+	r.GET("/edit_dividend/:did", editDividend)
+	r.POST("/update_dividend", saveDividend)
 
 	// Cash pages
 	r.GET("/Cash", showCashPage)

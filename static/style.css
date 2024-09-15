@@ -1,0 +1,11 @@
+/* All paragraphs */
+p {
+	margin: 12px 0;
+}
+
+/* Input label, fixed with */
+.label {
+	width: 100px; 
+	display: inline-block; 
+	font-weight: bold;
+}

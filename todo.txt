@@ -1,9 +1,8 @@
 Prevent duplicate prices and rates for same day
 Price graph
-Dividends
 Cash: deposit/withdraw, buy/sell, dividends
 Holding page: show stocks held, current value, ROI of stock and total
 Format prices to 2 decimals
-Delete prices and rates
+Delete prices, rates, dividends, transactions, stocks
 Different accounts for same user
 Align input fields

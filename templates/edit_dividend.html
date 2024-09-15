@@ -1,0 +1,25 @@
+{{ template "header.html" . }}
+
+<h1 class="title">
+{{ if (eq .t.Id 0) }}Create{{ else }}Edit{{ end }}
+ Dividend</h1>
+
+<form action="/update_dividend" method="post">
+
+  <input type="hidden" name="did" value="{{.d.Id}}" />
+  <input type="hidden" name="sid" value="{{.s.Id}}" />
+
+  <p><span class="label">Date:</span> 
+    <input type="text" name="date" style="width: 10%;" value="{{fmtDate .d.Date}}" /></p>
+
+  <p><span class="label">Amount:</span>
+    <input type="text" name="amount" style="width: 10%;" value="{{.d.Amount}}" /></p>
+    
+  <p><b>Comments:</b><br />
+    <textarea name="comments" style="width: 100%; height: 100px">{{.d.Comments}}</textarea></p>
+
+  <p><input type="submit" value="Save" class="button is-small is-primary" /></p>
+
+</form>
+
+{{ template "footer.html" . }}
