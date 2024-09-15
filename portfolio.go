@@ -17,8 +17,11 @@ func showPortfolio(c *gin.Context) {
 	today := time.Now()
 	holdings := getPortfolio(today)
 
-	// TODO: get cash value today
-	cash := 100.0
+	// Get cash value today
+	var cash float64
+	for _, c := range getAllCash(today) {
+		cash += c.Amount
+	}
 
 	// Show page
 	c.HTML(http.StatusOK, "portfolio.html",
@@ -86,7 +89,7 @@ func stockValue(sid int, d time.Time) float64 {
 	for _, p := range getPrices(sid) {
 		ts = append(ts, TimeSeriesPoint{p.Date, p.Price})
 	}
-	price := priceOn(ts, d)
+	price := latestPriceAt(ts, d)
 
 	// If not in home currency, get exchange rate on that date
 	exchangeRate := 1.0 // will be 1 if already in home currency
@@ -99,7 +102,7 @@ func stockValue(sid int, d time.Time) float64 {
 		for _, x := range getRates(cur.Id) {
 			ts = append(ts, TimeSeriesPoint{x.Date, x.Rate})
 		}
-		exchangeRate = priceOn(ts, d)
+		exchangeRate = latestPriceAt(ts, d)
 	}
 
 	// Return value of the stock

@@ -19,11 +19,15 @@ func showCashPage(c *gin.Context) {
 	trans := getAllCash(today) // including "virtual" buy/sell
 
 	// TODO: get cash value today, just sum of table above
-	bal := 100.0
+	// Get cash value today
+	var cash float64
+	for _, c := range getAllCash(today) {
+		cash += c.Amount
+	}
 
 	// Show page
 	c.HTML(http.StatusOK, "cash.html",
-		gin.H{"d": today, "transactions": trans, "balance": bal,
+		gin.H{"d": today, "transactions": trans, "balance": cash,
 			"menu": menu, "current": "Cash"})
 }
 

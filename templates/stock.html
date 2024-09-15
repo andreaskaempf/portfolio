@@ -44,6 +44,7 @@
     <th>Balance</th>
     <th>Amount</th>
     <th>Fees</th>
+    <th>Imp. Price</th>
   </thead>
   <tbody>
   {{ $bal := 0.0 }}
@@ -55,6 +56,7 @@
     <td align="right">{{ fmtAmount $bal }}</td>
     <td align="right">{{ fmtAmount .Amount }}</td>
     <td align="right">{{ fmtAmount .Fees }}</td>
+    <td align="right">{{ fmtAmount (div (sub .Amount .Fees) .Q) }}
   </tr>
   {{ end }}
 </table>

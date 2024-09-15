@@ -158,7 +158,7 @@ func getPrice(pid int) *Price {
 	return &p
 }
 
-// Get all prices for a stock
+// Get all prices for a stock, sorted by ascending date
 func getPrices(sid int) []Price {
 
 	// Connect to database
@@ -166,7 +166,7 @@ func getPrices(sid int) []Price {
 	defer db.Close()
 
 	// Execute query to get all prices for this stock, in date order
-	rows, err := db.Query("select id, pdate, price, comments from price where stock_id = $1 order by pdate desc", sid)
+	rows, err := db.Query("select id, pdate, price, comments from price where stock_id = $1 order by pdate", sid)
 	if err != nil {
 		panic("getPrices query: " + err.Error())
 	}

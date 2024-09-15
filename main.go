@@ -23,13 +23,14 @@ func main() {
 
 	// Create router, define custom functions
 	r := gin.Default()
-	r.FuncMap = template.FuncMap{"mul": func(a, b float64) float64 {
-		return a * b
-	}, "add": func(a, b float64) float64 {
-		return a + b
-	},
+	r.FuncMap = template.FuncMap{
+		"add":       func(a, b float64) float64 { return a + b },
+		"sub":       func(a, b float64) float64 { return a - b },
+		"mul":       func(a, b float64) float64 { return a * b },
+		"div":       func(a, b float64) float64 { return a / b },
 		"fmtDate":   formatDate,
-		"fmtAmount": formatFloat}
+		"fmtAmount": formatFloat,
+	}
 
 	// Initialize templates and location of static files
 	r.LoadHTMLGlob("templates/*")

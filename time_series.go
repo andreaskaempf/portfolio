@@ -49,9 +49,29 @@ func formatDate(d time.Time) string {
 }
 
 // Get price on a certain date, using first date if before, last date if after,
+// most recent recorded price if between dates (i.e., don't interpolate).
+func latestPriceAt(ts TimeSeries, on time.Time) float64 {
+
+	// Return 0 if series is empty
+	if len(ts) == 0 {
+		return 0
+	}
+
+	// Search for last price before requested date
+	p := ts[0].p
+	for i := 1; i < len(ts); i++ {
+		if ts[i].d.After(on) {
+			return p
+		}
+		p = ts[i].p
+	}
+	return p
+}
+
+// Get price on a certain date, using first date if before, last date if after,
 // or linear interpolation if between dates. Assumes time series is sorted by
 // date.
-func priceOn(ts TimeSeries, on time.Time) float64 {
+func priceOnInterpolate(ts TimeSeries, on time.Time) float64 {
 
 	// Return 0 if series is empty
 	if len(ts) == 0 {
@@ -99,8 +119,10 @@ func sameDate(d1, d2 time.Time) bool {
 }
 
 // Determine if date1 is earlier than date2
+// TODO: there is a built-in function to do this
 func earlier(d1, d2 time.Time) bool {
-	if d1.Year() < d2.Year() {
+	return d1.Before(d2)
+	/*if d1.Year() < d2.Year() {
 		return true
 	} else if d1.Year() > d2.Year() {
 		return false
@@ -110,10 +132,10 @@ func earlier(d1, d2 time.Time) bool {
 		return false
 	} else {
 		return d1.Day() < d2.Day()
-	}
+	}*/
 }
 
 // Determine if date1 is later than date2
 func later(d1, d2 time.Time) bool {
-	return !sameDate(d1, d2) && !earlier(d1, d2)
+	return d1.After(d2) //!sameDate(d1, d2) && !earlier(d1, d2)
 }
