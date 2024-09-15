@@ -345,7 +345,7 @@ type Dividend struct {
 	Comments string
 }
 
-// Get a list of all dividends for a stock
+// Get a list of all dividends for a stock, or for all stocks if ID is 0
 func getDividends(sid int) []Dividend {
 
 	// Connect to database
@@ -355,7 +355,14 @@ func getDividends(sid int) []Dividend {
 	// Execute query to get all transactions
 	var err error
 	var rows *sql.Rows
-	rows, err = db.Query("select id, stock_id, tdate, amount, comments from dividend where stock_id == $1 order by tdate", sid)
+	q := "select id, stock_id, tdate, amount, comments from dividend"
+	if sid > 0 {
+		q += " where stock_id == $1 order by tdate"
+		rows, err = db.Query(q, sid)
+	} else {
+		q += " order by tdate"
+		rows, err = db.Query(q)
+	}
 	if err != nil {
 		panic("getDividends query: " + err.Error())
 	}

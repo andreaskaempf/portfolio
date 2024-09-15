@@ -19,7 +19,15 @@
   {{ range .transactions }}
     {{ $bal = (add $bal .Amount) }}
     <tr style="border: 1px solid #ccc">
-      <td><a href="/cash/{{ .Id }}">{{ fmtDate .Date }}</a></td>
+      <td>
+        {{ if (eq .Type "Dividends") }}
+          <a href="/edit_dividend/{{ .Id }}">{{ fmtDate .Date }}</a></td>
+        {{ else if (or (eq .Type "Buy") (eq .Type "Sell")) }}
+          <a href="/edit_transaction/{{ .Id }}">{{ fmtDate .Date }}</a></td>
+        {{ else }}
+          <a href="/cash/{{ .Id }}">{{ fmtDate .Date }}</a>
+        {{ end }}
+      </td>
       <td>{{ .Type }}</td>
       <td align="right">{{ if (gt .Amount 0.0) }}{{ .Amount  | printf "%.2f" }}{{ end }}</td>
       <td align="right">{{ if (lt .Amount 0.0) }}{{ (mul .Amount -1)  | printf "%.2f" }}{{ end }}</td>

@@ -9,20 +9,22 @@
   <input type="hidden" name="tid" value="{{.t.Id}}" />
   <input type="hidden" name="sid" value="{{.s.Id}}" />
 
-  <p><b>Date:</b> 
-    <br/><input type="text" name="date" style="width: 60%;" value="{{.t.Date}}" /></p>
+  <p><span class="label">Date:</span> 
+    <input type="text" name="date" style="width: 10%;" value="{{ fmtDate .t.Date }}" /></p>
 
-  <p><b>Units:</b> (negative to sell)
-    <br /><input type="text" name="q" style="width: 60%;" value="{{.t.Q}}" /></p>
+  <p><span class="label">Units:</span> 
+    <input type="text" name="q" style="width: 10%;" value="{{ .t.Q }}" />
+    (negative to sell)</p>
 
-  <p><b>Total amount</b> including fees:
-    <br /><input type="text" name="amount" style="width: 60%;" value="{{.t.Amount}}" /></p>
+  <p><span class="label">Total amount:</span>
+    <input type="text" name="amount" style="width: 10%;" value="{{.t.Amount}}" />
+    (including fees)</p>
     
-  <p><b>Commission</b> and other fees:
-    <br /><input type="text" name="fees" style="width: 60%;" value="{{.t.Fees}}" /></p>
+  <p><span class="label">Commission:</span>
+    <input type="text" name="fees" style="width: 10%;" value="{{.t.Fees}}" />
+     including other fees</p>
 
-  <br/>
-  <input type="submit" value="Save" class="button is-small is-primary" />
+  <p><input type="submit" value="Save" class="button is-small is-primary" /></p>
 
 </form>
 

@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -157,13 +158,40 @@ func delCash(c *gin.Context) {
 func getAllCash(d time.Time) []Cash {
 
 	// Get all explicit transactions, e.g., deposits & withdrawals
-	// TODO: filter by date
 	cc := getCashTransactions()
 
-	// TODO: add all buy/sell transactions
+	// Transactions: buy reduces cash, sell increases cash
+	tt := getTransactions(0)
+	for _, t := range tt {
+		s := getStock(t.Stock)
+		a := t.Amount
+		q := t.Q
+		ttype := "Sell"
+		if q > 0 {
+			ttype = "Buy"
+			a *= -1
+			q *= -1
+		}
+		cmt := fmt.Sprintf("%s %.1f %s", ttype, t.Q, s.Name)
+		c := Cash{Type: ttype, Id: t.Id, Date: t.Date, Amount: a, Comments: cmt}
+		cc = append(cc, c)
+	}
 
-	// TODO: add dividends
+	// Dividends increase cash
+	dd := getDividends(0)
+	for _, d := range dd {
+		s := getStock(d.Stock)
+		cmt := fmt.Sprintf("Dividends on %s", s.Name)
+		c := Cash{Type: "Dividends", Id: d.Id, Date: d.Date, Amount: d.Amount, Comments: cmt}
+		cc = append(cc, c)
+	}
 
-	// TODO: sort by date
+	// TODO: filter by date
+
+	// Sort by ascending date
+	sort.Slice(cc, func(i, j int) bool {
+		return cc[i].Date.Before(cc[j].Date)
+	})
+
 	return cc
 }

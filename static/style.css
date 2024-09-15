@@ -5,7 +5,7 @@ p {
 
 /* Input label, fixed with */
 .label {
-	width: 100px; 
+	width: 120px; 
 	display: inline-block; 
 	font-weight: bold;
 }
