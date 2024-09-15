@@ -2,10 +2,6 @@ package main
 
 import (
 	"fmt"
-	//"io"
-	//"os"
-	"time"
-	//"net/http"
 	"text/template"
 
 	"github.com/gin-gonic/gin"
@@ -31,9 +27,9 @@ func main() {
 		return a * b
 	}, "add": func(a, b float64) float64 {
 		return a + b
-	}, "fmtDate": func(d time.Time) string {
-		return formatDate(d)
-	}}
+	},
+		"fmtDate":   formatDate,
+		"fmtAmount": formatFloat}
 
 	// Initialize templates and location of static files
 	r.LoadHTMLGlob("templates/*")

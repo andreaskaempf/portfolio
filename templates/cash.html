@@ -1,9 +1,9 @@
 {{ template "header.html" .}}
 
-<h1 class="title">Cash to {{ .d.Format "2006-01-02" }}</h1>
+<h1 class="title">Cash to {{ fmtDate .d }}</h1>
 
 <p style="margin-bottom: 24px; font-weight: bold">
-  Balance: {{ .balance | printf "%.2f" }}
+  Balance: {{ fmtAmount .balance }}
   <a href="/edit_cash/0" class="button is-primary is-small" style="float: right">Add transaction</a></p>
 
 {{ $bal := 0.0 }}
@@ -29,9 +29,9 @@
         {{ end }}
       </td>
       <td>{{ .Type }}</td>
-      <td align="right">{{ if (gt .Amount 0.0) }}{{ .Amount  | printf "%.2f" }}{{ end }}</td>
-      <td align="right">{{ if (lt .Amount 0.0) }}{{ (mul .Amount -1)  | printf "%.2f" }}{{ end }}</td>
-      <td align="right">{{ $bal | printf "%.2f" }}</td>
+      <td align="right">{{ if (gt .Amount 0.0) }}{{ fmtAmount .Amount }}{{ end }}</td>
+      <td align="right">{{ if (lt .Amount 0.0) }}{{ fmtAmount (mul .Amount -1) }}{{ end }}</td>
+      <td align="right">{{ fmtAmount $bal }}</td>
       <td align="right">{{ .Comments }}</td>
     </tr>
   {{ end }}

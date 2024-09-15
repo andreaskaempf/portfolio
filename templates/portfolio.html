@@ -1,6 +1,6 @@
 {{ template "header.html" .}}
 
-<h1 class="title">Portfolio on {{ .d.Format "2006-01-02" }}</h1>
+<h1 class="title">Portfolio on {{ fmtDate .d }}</h1>
 
 {{ $totStocks := 0.0 }}
 <table class="table table-striped">
@@ -14,24 +14,24 @@
   {{ range .holdings }}
     <tr style="border: 1px solid #ccc">
       <td><a href="/stock/{{ .Stock.Id }}">{{ .Stock.Code }}</a> ({{ .Stock.Name }})</td>
-      <td align="right">{{ .Units | printf "%.2f" }}</td>
-      <td align="right">{{ .Cost  | printf "%.2f" }}</td>
-      <td align="right">{{ .Value | printf "%.2f" }}</td>
-      <td align="right">{{ .Return| printf "%.1f%%" }}</td>
+      <td align="right">{{ .Units }}</td>
+      <td align="right">{{ fmtAmount .Cost }}</td>
+      <td align="right">{{ fmtAmount .Value }}</td>
+      <td align="right">{{ fmtAmount .Return }}</td>
     </tr>
     {{ $totStocks = (add $totStocks .Value) }}
   {{ end }}
     <tr style="border: 1px solid #ccc; font-weight: bold">
       <td colspan="3">Total stocks</td>
-      <td align="right">{{ $totStocks | printf "%.2f" }}</td>
+      <td align="right">{{ fmtAmount $totStocks }}</td>
     </tr>
     <tr style="border: 1px solid #ccc; font-weight: bold">
       <td colspan="3">Cash</td>
-      <td align="right">{{ .cash | printf "%.2f" }}</td>
+      <td align="right">{{ fmtAmount .cash }}</td>
     </tr>
     <tr style="border: 1px solid #ccc; font-weight: bold">
       <td colspan="3">Total portfolio value</td>
-      <td align="right">{{ (add .cash $totStocks) | printf "%.2f" }}</td>
+      <td align="right">{{ fmtAmount (add .cash $totStocks) }}</td>
     </tr>
 </table>
 

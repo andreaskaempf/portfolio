@@ -23,8 +23,8 @@
   <tbody>
   {{ range .rates }}
   <tr>
-    <td><a href="/edit_rate/{{ .Id }}">{{ .Date.Format "2006-01-02" }}</a></td>
-    <td align="right">{{ printf "%.2f" .Rate }}</td>
+    <td><a href="/edit_rate/{{ .Id }}">{{ fmtDate .Date }}</a></td>
+    <td align="right">{{ .Rate | printf "%.4f" }}</td>
   </tr>
   {{ end }}
   </tbody>

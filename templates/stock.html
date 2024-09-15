@@ -2,10 +2,10 @@
 
 <h1 class="title">{{.s.Name}}</h1>
 
-<p><b>Code:</b> {{.s.Code}}</p>
-<p><b>Name:</b> {{.s.Name}}</p>
-<p><b>Held:</b> {{ .units }}</p>
-<p><b>Currency:</b> {{.s.Currency}}</p>
+<p><span class="label">Code:</span> {{.s.Code}}</p>
+<p><span class="label">Name:</span> {{.s.Name}}</p>
+<p><span class="label">Held:</span> {{ .units }}</p>
+<p><span class="label">Currency:</span> {{.s.Currency}}</p>
 
 <br />
 <p>
@@ -27,8 +27,8 @@
   <tbody>
   {{ range .dividends }}
   <tr>
-    <td><a href="/edit_dividend/{{ .Id }}">{{ .Date.Format "2006-01-02" }}</a></td>
-    <td align="right">{{ .Amount }}</td>
+    <td><a href="/edit_dividend/{{ .Id }}">{{ fmtDate .Date }}</a></td>
+    <td align="right">{{ fmtAmount .Amount }}</td>
     <td align="right">{{ .Comments }}</td>
   </tr>
   {{ end }}
@@ -49,12 +49,12 @@
   {{ $bal := 0.0 }}
   {{ range .transactions }}
   <tr>
-    <td><a href="/edit_transaction/{{ .Id }}">{{ .Date.Format "2006-01-02" }}</a></td>
+    <td><a href="/edit_transaction/{{ .Id }}">{{ fmtDate .Date }}</a></td>
     <td align="right">{{.Q}}</td>
     {{ $bal = add $bal .Q }}
-    <td align="right">{{ $bal }}</td>
-    <td align="right">{{ .Amount }}</td>
-    <td align="right">{{ .Fees }}</td>
+    <td align="right">{{ fmtAmount $bal }}</td>
+    <td align="right">{{ fmtAmount .Amount }}</td>
+    <td align="right">{{ fmtAmount .Fees }}</td>
   </tr>
   {{ end }}
 </table>
@@ -71,8 +71,8 @@
   <tbody>
   {{ range .prices }}
   <tr>
-    <td><a href="/edit_price/{{ .Id }}">{{ .Date.Format "2006-01-02" }}</a></td>
-    <td align="right">{{ .Price }}</td>
+    <td><a href="/edit_price/{{ .Id }}">{{ fmtDate .Date }}</a></td>
+    <td align="right">{{ fmtAmount .Price }}</td>
     <td>{{ .Comments }}</td>
   </tr>
   {{ end }}
