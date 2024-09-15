@@ -13,7 +13,7 @@ import (
 // Show table of holdings with current value and return since purchase
 func showPortfolio(c *gin.Context) {
 
-	// Get portfolio for today
+	// Get portfolio holdings for today
 	today := time.Now()
 	holdings := getPortfolio(today)
 
@@ -31,12 +31,14 @@ func showPortfolio(c *gin.Context) {
 
 // Portfolio holding a particular date
 type Holding struct {
-	Stock  Stock   // the asset held
-	Units  float64 // quantity held
-	Price  float64 // average price in local currency
-	Cost   float64 // total cost in home currency
-	Value  float64 // current value, in home currency
-	Return float64 // percentage return since purchase
+	Stock     Stock   // the asset held
+	Units     float64 // quantity held
+	UnitCost  float64 // avg price paid per unit
+	CurPrice  float64 // current price in local currency
+	TotCost   float64 // price paid cost in home currency
+	CurValue  float64 // current value, in home currency
+	Dividends float64 // total dividends received from this stock
+	Return    float64 // percentage return since purchase
 }
 
 // Get holdings on a particular date
@@ -62,12 +64,22 @@ func getPortfolio(d time.Time) []Holding {
 			}
 		}
 
+		// Accumulate dividends
+		var totDividends float64
+		for _, d := range getDividends(s.Id) {
+			totDividends += d.Amount
+		}
+
 		// If any of this stock currently held, calculate current value and return
 		// and add it to list
 		if q != 0 { // should never be negative, but just in case ...
-			curValue := q * stockValue(s.Id, d)
-			pcntUp := ((curValue - cost) / cost) * 100.0
-			h := Holding{Stock: s, Units: q, Cost: cost, Value: curValue, Return: pcntUp}
+			unitCost := cost / q
+			curPrice := stockValue(s.Id, d) // current price
+			curValue := q * curPrice
+			gain := (curPrice-unitCost)*q + totDividends
+			pcntUp := gain / cost * 100.0
+			h := Holding{Stock: s, Units: q, UnitCost: unitCost, CurPrice: curPrice,
+				CurValue: curValue, Dividends: totDividends, Return: pcntUp}
 			holdings = append(holdings, h)
 		}
 	}

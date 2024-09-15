@@ -3,34 +3,38 @@
 <h1 class="title">Portfolio on {{ fmtDate .d }}</h1>
 
 {{ $totStocks := 0.0 }}
-<table class="table table-striped">
+<table class="table table-striped" style="width: 100%">
   <tr style="border: 1px solid #ccc">
     <th>Asset</th>
     <th align="right">Units</th>
-    <th align="right">Avg Cost</th>
-    <th align="right">Value</th>
+    <th align="right">Avg Unit Cost</th>
+    <th align="right">Current Price</th>
+    <th align="right">Current Value</th>
+    <th align="right">Dividends</th>
     <th align="right">Return</th>
   </tr>
   {{ range .holdings }}
     <tr style="border: 1px solid #ccc">
       <td><a href="/stock/{{ .Stock.Id }}">{{ .Stock.Code }}</a> ({{ .Stock.Name }})</td>
       <td align="right">{{ .Units }}</td>
-      <td align="right">{{ fmtAmount .Cost }}</td>
-      <td align="right">{{ fmtAmount .Value }}</td>
+      <td align="right">{{ fmtAmount .UnitCost }}</td>
+      <td align="right">{{ fmtAmount .CurPrice }}</td>
+      <td align="right">{{ fmtAmount .CurValue }}</td>
+      <td align="right">{{ fmtAmount .Dividends }}</td>
       <td align="right">{{ fmtAmount .Return }}</td>
     </tr>
-    {{ $totStocks = (add $totStocks .Value) }}
+    {{ $totStocks = (add $totStocks .CurValue) }}
   {{ end }}
     <tr style="border: 1px solid #ccc; font-weight: bold">
-      <td colspan="3">Total stocks</td>
+      <td colspan="4">Total stocks</td>
       <td align="right">{{ fmtAmount $totStocks }}</td>
     </tr>
     <tr style="border: 1px solid #ccc; font-weight: bold">
-      <td colspan="3">Cash</td>
+      <td colspan="4">Cash</td>
       <td align="right">{{ fmtAmount .cash }}</td>
     </tr>
     <tr style="border: 1px solid #ccc; font-weight: bold">
-      <td colspan="3">Total portfolio value</td>
+      <td colspan="4">Total portfolio value</td>
       <td align="right">{{ fmtAmount (add .cash $totStocks) }}</td>
     </tr>
 </table>
