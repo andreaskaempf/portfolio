@@ -15,7 +15,7 @@ func showPortfolio(c *gin.Context) {
 
 	// Get portfolio holdings for today
 	today := time.Now()
-	holdings := getPortfolio(today)
+	holdings := getPortfolio(today, true)
 
 	// Get cash value today
 	var cash float64
@@ -41,8 +41,8 @@ type Holding struct {
 	Return    float64 // percentage return since purchase
 }
 
-// Get holdings on a particular date
-func getPortfolio(d time.Time) []Holding {
+// Get holdings on a particular date, optionally only those held on that date
+func getPortfolio(d time.Time, heldNow bool) []Holding {
 
 	// Get all stocks, including those never or no longer held, and
 	// go through transactions to determine holdings for each stock,
@@ -72,8 +72,8 @@ func getPortfolio(d time.Time) []Holding {
 
 		// If any of this stock currently held, calculate current value and return
 		// and add it to list
-		if q != 0 { // should never be negative, but just in case ...
-			unitCost := cost / q
+		if q != 0 || !heldNow { // should never be negative, but just in case ...
+			unitCost := cost / q            // TODO: risk of /0?
 			curPrice := stockValue(s.Id, d) // current price
 			curValue := q * curPrice
 			gain := (curPrice-unitCost)*q + totDividends

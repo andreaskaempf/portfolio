@@ -2,7 +2,7 @@
 
 <h1 class="title">
 {{ if (eq .p.Id 0) }}Add{{ else }}Edit{{ end }}
- Price</h1>
+ Price for {{ .stock.Name }}</h1>
 
 <form action="/update_price" method="post">
 

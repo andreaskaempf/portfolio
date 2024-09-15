@@ -18,12 +18,14 @@ import (
 // Show list of all stocks
 func showStocks(c *gin.Context) {
 
-	// Get a list of holdings
-	stocks := getStocks()
+	// Get a list of all stocks, including not held
+	//stocks := getStocks()
+	today := time.Now()
+	holdings := getPortfolio(today, false)
 
 	// Show page
 	c.HTML(http.StatusOK, "stocks.html",
-		gin.H{"stocks": stocks, "menu": menu, "current": "Stocks"})
+		gin.H{"holdings": holdings, "menu": menu, "current": "Stocks"})
 }
 
 // Page to show one stock
@@ -184,7 +186,7 @@ func editTransaction(c *gin.Context) {
 			c.String(http.StatusNotFound, "Missing stock ID, required for adding transaction")
 			return
 		}
-		t = &Transaction{Stock: sid, Date: time.Now()}
+		t = &Transaction{Stock: sid, Date: lastTransDate}
 	} else {
 		t = getTransaction(tid)
 		if t == nil {
@@ -248,6 +250,9 @@ func saveTransaction(c *gin.Context) {
 	// Create or update person database
 	addUpdateTransaction(t)
 
+	// Remember the last transaction date for next entry
+	lastTransDate = t.Date
+
 	// Go back to stock page
 	c.Redirect(http.StatusFound, fmt.Sprintf("/stock/%d", sid))
 }
@@ -280,7 +285,8 @@ func editDividend(c *gin.Context) {
 			c.String(http.StatusNotFound, "Missing stock ID, required for adding dividend")
 			return
 		}
-		d = &Dividend{Stock: sid, Date: time.Now()} // TODO: why not just reuse blank dividend?
+		d = &Dividend{Stock: sid, Date: lastTransDate} // TODO: why not just reuse blank dividend?
+		d.Comments = "From statement"
 	} else {
 		d = getDividend(did)
 		if d == nil {
@@ -340,6 +346,9 @@ func saveDividend(c *gin.Context) {
 
 	// Create or update person database
 	addUpdateDividend(d)
+
+	// Remember the last transaction date for next entry
+	lastTransDate = d.Date
 
 	// Go back to stock page
 	c.Redirect(http.StatusFound, fmt.Sprintf("/stock/%d", sid))

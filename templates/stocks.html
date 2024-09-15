@@ -2,19 +2,33 @@
 
 <h1 class="title">Stocks</h1>
 
-<table class="table table-striped">
+{{ $totStocks := 0.0 }}
+<table class="table table-striped" style="width: 100%">
   <tr style="border: 1px solid #ccc">
-    <th>Code</th>
-    <th>Name</th>
-    <th>Currency</th>
+    <th>Asset</th>
+    <th align="right">Units</th>
+    <th align="right">Avg Unit Cost</th>
+    <th align="right">Current Price</th>
+    <th align="right">Current Value</th>
+    <th align="right">Dividends</th>
+    <th align="right">Return</th>
   </tr>
-  {{ range .stocks }}
+  {{ range .holdings }}
     <tr style="border: 1px solid #ccc">
-      <td><a href="/stock/{{ .Id }}">{{ .Code }}</a></td>
-      <td>{{ .Name }}</td>
-      <td>{{ .Currency }}</td>
+      <td><a href="/stock/{{ .Stock.Id }}">{{ .Stock.Code }}</a> ({{ .Stock.Name }})</td>
+      <td align="right">{{ .Units }}</td>
+      <td align="right">{{ fmtAmount .UnitCost }}</td>
+      <td align="right">{{ fmtAmount .CurPrice }}</td>
+      <td align="right">{{ fmtAmount .CurValue }}</td>
+      <td align="right">{{ fmtAmount .Dividends }}</td>
+      <td align="right">{{ fmtAmount .Return }}</td>
     </tr>
+    {{ $totStocks = (add $totStocks .CurValue) }}
   {{ end }}
+    <tr style="border: 1px solid #ccc; font-weight: bold">
+      <td colspan="4">Total value</td>
+      <td align="right">{{ fmtAmount $totStocks }}</td>
+    </tr>
 </table>
 
 <p><a href="/edit_stock/0" class="button is-primary is-small">Add stock</a></p>

@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -36,7 +35,8 @@ func editPrice(c *gin.Context) {
 			return
 		}
 		newPrice := 0.0 // TODO: default price sould be most recent one
-		p = Price{Id: 0, Date: time.Now(), Stock: sid, Price: newPrice, Comments: ""}
+		p = Price{Id: 0, Date: lastTransDate, Stock: sid, Price: newPrice}
+		p.Comments = "From statement"
 	} else { // get existing price
 		pp := getPrice(pid)
 		if pp == nil {
@@ -47,9 +47,13 @@ func editPrice(c *gin.Context) {
 		sid = p.Stock
 	}
 
+	// Get the stock, used for heading on form
+	stock := getStock(sid)
+
 	// Show the form to edit price
 	c.HTML(http.StatusOK, "edit_price.html",
-		gin.H{"p": p, "ds": formatDate(p.Date), "menu": menu, "current": "Stocks"})
+		gin.H{"p": p, "ds": formatDate(p.Date), "stock": stock,
+			"menu": menu, "current": "Stocks"})
 }
 
 // Create or update a price
@@ -104,6 +108,9 @@ func updatePrice(c *gin.Context) {
 
 	// Create or update price
 	addUpdatePrice(p)
+
+	// Remember the last transaction date for next entry
+	lastTransDate = p.Date
 
 	// Go back to the stock page
 	c.Redirect(http.StatusFound, fmt.Sprintf("/stock/%d", sid))

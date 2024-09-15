@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"text/template"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +20,13 @@ var cashTypes = []string{"Deposit", "Withdrawal"}
 // Home currency (TODO: in database)
 var homeCurrency = currencies[0]
 
+// Last date entered on a transaction this session
+var lastTransDate time.Time
+
 func main() {
+
+	// Set the last time entered to now
+	lastTransDate = time.Now()
 
 	// Create router, define custom functions
 	r := gin.Default()
