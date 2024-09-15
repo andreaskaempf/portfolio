@@ -1,12 +1,13 @@
-Prevent duplicate prices and rates for same day
 Price graph
 Holding page: show stocks held, current value, ROI of stock and total
+Show portfolio, cash for particular date
 Delete prices, rates, dividends, transactions, stocks
 Different accounts for same user
-Highlight current menu item
 Date picker
+Prevent duplicate prices and rates for same day
 
 DONE:
 Align input fields
 Cash: deposit/withdraw, buy/sell, dividends
 Format prices to 2 decimals
+Highlight current menu item

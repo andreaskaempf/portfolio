@@ -23,7 +23,7 @@ func showStocks(c *gin.Context) {
 
 	// Show page
 	c.HTML(http.StatusOK, "stocks.html",
-		gin.H{"stocks": stocks, "menu": menu})
+		gin.H{"stocks": stocks, "menu": menu, "current": "Stocks"})
 }
 
 // Page to show one stock
@@ -51,7 +51,8 @@ func showStock(c *gin.Context) {
 	// Show page
 	c.HTML(http.StatusOK, "stock.html",
 		gin.H{"s": s, "transactions": transactions, "units": units,
-			"prices": prices, "dividends": dividends, "menu": menu})
+			"prices": prices, "dividends": dividends,
+			"menu": menu, "current": "Stocks"})
 }
 
 // Show form to edit a stock (including a new one)
@@ -76,7 +77,8 @@ func editStock(c *gin.Context) {
 
 	// Show the form to edit stock
 	c.HTML(http.StatusOK, "edit_stock.html",
-		gin.H{"s": s, "currencies": currencies, "menu": menu})
+		gin.H{"s": s, "currencies": currencies,
+			"menu": menu, "current": "Stocks"})
 }
 
 // Process form to update or add an stock
@@ -144,7 +146,7 @@ func delStock(c *gin.Context) {
 	confirm, _ := c.GetQuery("confirm")
 	if confirm == "" { // no confirmation, show form
 		c.HTML(http.StatusOK, "del_stock.html",
-			gin.H{"s": s, "menu": menu})
+			gin.H{"s": s, "menu": menu, "current": "Stocks"})
 	} else if confirm == "yes" { // confirmed, delete stock
 		deleteStock(sid)
 		c.Redirect(http.StatusFound, "/Stocks")
@@ -201,7 +203,7 @@ func editTransaction(c *gin.Context) {
 
 	// Show the form to edit transaction
 	c.HTML(http.StatusOK, "edit_transaction.html",
-		gin.H{"t": t, "s": s, "menu": menu})
+		gin.H{"t": t, "s": s, "menu": menu, "current": "Stocks"})
 }
 
 // Process form to update or add a transaction
@@ -297,7 +299,7 @@ func editDividend(c *gin.Context) {
 
 	// Show the form to edit dividend
 	c.HTML(http.StatusOK, "edit_dividend.html",
-		gin.H{"d": d, "s": s, "menu": menu})
+		gin.H{"d": d, "s": s, "menu": menu, "current": "Stocks"})
 }
 
 // Process form to update or add a transaction

@@ -1,7 +1,12 @@
 <nav class="navbar">
   <div class="navbar-menu">
+    {{ $current := .current }}
     {{ range .menu }}
-      <a href="/{{.}}" class="navbar-item" style="font-weight: bold">{{.}}</a>
+      {{ if (eq . $current) }}
+        <a href="/{{.}}" class="navbar-item is-active" style="font-weight: bold">{{.}}</a>
+      {{ else }}
+        <a href="/{{.}}" class="navbar-item" style="font-weight: bold">{{.}}</a>
+      {{ end }}
     {{ end }}
   </div>
 </nav>

@@ -17,7 +17,7 @@ func showCurrencies(c *gin.Context) {
 
 	// Show page
 	c.HTML(http.StatusOK, "currencies.html",
-		gin.H{"currencies": currencies, "menu": menu})
+		gin.H{"currencies": currencies, "menu": menu, "current": "Currencies"})
 }
 
 // Page to show one currency
@@ -36,7 +36,7 @@ func showCurrency(c *gin.Context) {
 
 	// Show page
 	c.HTML(http.StatusOK, "currency.html",
-		gin.H{"cur": cur, "rates": rates, "menu": menu})
+		gin.H{"cur": cur, "rates": rates, "menu": menu, "current": "Currencies"})
 }
 
 // Show form to edit a currency (including a new one)
@@ -61,7 +61,7 @@ func editCurrency(c *gin.Context) {
 
 	// Show the form to edit currency
 	c.HTML(http.StatusOK, "edit_currency.html",
-		gin.H{"cur": cur, "menu": menu})
+		gin.H{"cur": cur, "menu": menu, "current": "Currencies"})
 }
 
 // Process form to update or add an currency
@@ -108,7 +108,6 @@ func saveCurrency(c *gin.Context) {
 
 	// Go back to currencies page
 	c.Redirect(http.StatusFound, "/Currencies")
-
 }
 
 // Delete currency: ask for confirmation first
@@ -126,7 +125,7 @@ func delCurrency(c *gin.Context) {
 	confirm, _ := c.GetQuery("confirm")
 	if confirm == "" { // no confirmation, show form
 		c.HTML(http.StatusOK, "del_currency.html",
-			gin.H{"cur": cur, "menu": menu})
+			gin.H{"cur": cur, "menu": menu, "current": "Currencies"})
 	} else if confirm == "yes" { // confirmed, delete currency
 		deleteCurrency(cid)
 		c.Redirect(http.StatusFound, "/Currencies")

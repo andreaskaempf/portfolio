@@ -23,7 +23,8 @@ func showCashPage(c *gin.Context) {
 
 	// Show page
 	c.HTML(http.StatusOK, "cash.html",
-		gin.H{"d": today, "transactions": trans, "balance": bal, "menu": menu})
+		gin.H{"d": today, "transactions": trans, "balance": bal,
+			"menu": menu, "current": "Cash"})
 }
 
 // Page to show one cash transaction
@@ -39,7 +40,7 @@ func showCash(c *gin.Context) {
 
 	// Show page
 	c.HTML(http.StatusOK, "cash_trans.html",
-		gin.H{"c": t, "menu": menu})
+		gin.H{"c": t, "menu": menu, "current": "Cash"})
 }
 
 // Show form to edit/create a cash transaction
@@ -72,7 +73,7 @@ func editCash(c *gin.Context) {
 
 	// Show the form to edit cash
 	c.HTML(http.StatusOK, "edit_cash.html",
-		gin.H{"c": t, "types": cashTypes, "menu": menu})
+		gin.H{"c": t, "types": cashTypes, "menu": menu, "current": "Cash"})
 }
 
 // Process form to update or add a cash transaction
@@ -144,7 +145,7 @@ func delCash(c *gin.Context) {
 	// Ask for confirmation, or go ahead and delete if confirmed
 	confirm, _ := c.GetQuery("confirm")
 	if confirm == "" { // no confirmation, show form
-		c.HTML(http.StatusOK, "del_cash.html", gin.H{"c": t, "menu": menu})
+		c.HTML(http.StatusOK, "del_cash.html", gin.H{"c": t, "menu": menu, "current": "Cash"})
 	} else if confirm == "yes" { // confirmed, delete cash
 		deleteCash(tid)
 		c.Redirect(http.StatusFound, "/Cash")

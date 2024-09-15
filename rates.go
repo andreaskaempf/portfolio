@@ -50,7 +50,7 @@ func editRate(c *gin.Context) {
 
 	// Show the form to edit rate
 	c.HTML(http.StatusOK, "edit_rate.html",
-		gin.H{"r": r, "ds": formatDate(r.Date), "menu": menu})
+		gin.H{"r": r, "ds": formatDate(r.Date), "menu": menu, "current": "Currencies"})
 }
 
 // Create or update a rate

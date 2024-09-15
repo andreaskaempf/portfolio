@@ -181,8 +181,6 @@ func getPrices(sid int) []Price {
 		if err != nil {
 			panic("getPrices next: " + err.Error())
 		}
-		//fmt.Println(p)
-		// TODO: convert date
 		p.Date = parseDate(ds)
 		pp = append(pp, p)
 	}
@@ -259,7 +257,6 @@ func getTransactions(sid int) []Transaction {
 	for rows.Next() {
 		t := Transaction{}
 		var ds string
-		fmt.Println(rows.Columns())
 		err := rows.Scan(&t.Id, &t.Stock, &ds, &t.Q, &t.Amount, &t.Fees)
 		if err != nil {
 			panic("getTransactions next: " + err.Error())
@@ -373,7 +370,6 @@ func getDividends(sid int) []Dividend {
 	for rows.Next() {
 		d := Dividend{}
 		var ds string
-		fmt.Println(rows.Columns())
 		err := rows.Scan(&d.Id, &d.Stock, &ds, &d.Amount, &d.Comments)
 		if err != nil {
 			panic("getDividends next: " + err.Error())

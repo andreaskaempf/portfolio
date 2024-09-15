@@ -49,7 +49,7 @@ func editPrice(c *gin.Context) {
 
 	// Show the form to edit price
 	c.HTML(http.StatusOK, "edit_price.html",
-		gin.H{"p": p, "ds": formatDate(p.Date), "menu": menu})
+		gin.H{"p": p, "ds": formatDate(p.Date), "menu": menu, "current": "Stocks"})
 }
 
 // Create or update a price
