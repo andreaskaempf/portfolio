@@ -1,10 +1,11 @@
 Price graph
 Holding page: show stocks held, current value, ROI of stock and total
-Show portfolio, cash for particular date
+Filter portfolio, cash for particular date
 Delete prices, rates, dividends, transactions, stocks
 Different accounts for same user
 Date picker
 Prevent duplicate prices and rates for same day
+Prices to 3 decimal points
 
 DONE:
 Align input fields

@@ -15,7 +15,7 @@ import (
 func showCashPage(c *gin.Context) {
 
 	// Get cash transactions up to today
-	today := time.Now()
+	today := lastTransDate     //time.Now()
 	trans := getAllCash(today) // including "virtual" buy/sell
 
 	// TODO: get cash value today, just sum of table above
@@ -126,6 +126,9 @@ func saveCash(c *gin.Context) {
 
 	// Create or update transaction in database
 	addUpdateCash(t)
+
+	// Remember last transaction date
+	lastTransDate = t.Date
 
 	// Go back to cash page or list
 	if tid == 0 {

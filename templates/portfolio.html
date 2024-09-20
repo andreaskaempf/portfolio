@@ -21,7 +21,7 @@
       <td align="right">{{ fmtAmount .CurPrice }}</td>
       <td align="right">{{ fmtAmount .CurValue }}</td>
       <td align="right">{{ fmtAmount .Dividends }}</td>
-      <td align="right">{{ fmtAmount .Return }}</td>
+      <td align="right">{{ .Return | printf "%.1f" }}%</td>
     </tr>
     {{ $totStocks = (add $totStocks .CurValue) }}
   {{ end }}

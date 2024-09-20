@@ -16,9 +16,9 @@
   {{ range .holdings }}
     <tr style="border: 1px solid #ccc">
       <td><a href="/stock/{{ .Stock.Id }}">{{ .Stock.Code }}</a> ({{ .Stock.Name }})</td>
-      <td align="right">{{ .Units }}</td>
-      <td align="right">{{ fmtAmount .UnitCost }}</td>
-      <td align="right">{{ fmtAmount .CurPrice }}</td>
+      <td align="right">{{ fmtAmount .Units  }}</td>
+      <td align="right">{{ .UnitCost | printf "%.3f" }}</td>
+      <td align="right">{{ .CurPrice | printf "%.3f" }}</td>
       <td align="right">{{ fmtAmount .CurValue }}</td>
       <td align="right">{{ fmtAmount .Dividends }}</td>
       <td align="right">{{ fmtAmount .Return }}</td>

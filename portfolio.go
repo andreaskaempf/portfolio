@@ -120,3 +120,15 @@ func stockValue(sid int, d time.Time) float64 {
 	// Return value of the stock
 	return price * exchangeRate
 }
+
+// Units held of a stock on a certain date
+func unitsHeld(sid int, d time.Time) float64 {
+	var q float64
+	for _, t := range getTransactions(sid) {
+		if !later(t.Date, d) {
+			q += t.Q
+
+		}
+	}
+	return q
+}

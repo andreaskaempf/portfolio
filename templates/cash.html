@@ -19,7 +19,7 @@
   {{ range .transactions }}
     {{ $bal = (add $bal .Amount) }}
     <tr style="border: 1px solid #ccc">
-      <td>
+      <td style="white-space: nowrap">
         {{ if (eq .Type "Dividends") }}
           <a href="/edit_dividend/{{ .Id }}">{{ fmtDate .Date }}</a></td>
         {{ else if (or (eq .Type "Buy") (eq .Type "Sell")) }}

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -90,13 +91,23 @@ func updatePrice(c *gin.Context) {
 	// Update the price with the form inputs
 	date, _ := c.GetPostForm("date")
 	p.Date = parseDate(date)
-	price, _ := c.GetPostForm("price")
-	p.Price = parseFloat(price)
 	p.Comments, _ = c.GetPostForm("comments")
 
+	// If the price number ends in '!', divide by units held
+	price, _ := c.GetPostForm("price")
+	price = strings.TrimSpace(price)
+	if len(price) > 0 && price[len(price)-1] == '!' {
+		n := unitsHeld(sid, p.Date) // don't worry, date checked below
+		if n > 0 {
+			tot := parseFloat(price[:len(price)-1])
+			p.Price = tot / n
+			p.Comments += fmt.Sprintf("\n%.2f / %.1f = %.3f", tot, n, p.Price)
+		}
+	} else {
+		p.Price = parseFloat(price)
+	}
+
 	// Some validation
-	// TODO: don't use StatusOK for errors
-	// TODO: flash in form?
 	if p.Price <= 0 {
 		c.String(http.StatusNotFound, "Price must be positive")
 		return

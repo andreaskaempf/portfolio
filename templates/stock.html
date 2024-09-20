@@ -28,7 +28,7 @@
   <tbody>
   {{ range .dividends }}
   <tr>
-    <td><a href="/edit_dividend/{{ .Id }}">{{ fmtDate .Date }}</a></td>
+    <td style="white-space: nowrap"><a href="/edit_dividend/{{ .Id }}">{{ fmtDate .Date }}</a></td>
     <td align="right">{{ fmtAmount .Amount }}</td>
     <td align="right">{{ .Comments }}</td>
   </tr>
@@ -45,19 +45,19 @@
     <th>Balance</th>
     <th>Amount</th>
     <th>Fees</th>
-    <th>Imp. Price</th>
+    <th>Implied Price</th>
   </thead>
   <tbody>
   {{ $bal := 0.0 }}
   {{ range .transactions }}
   <tr>
-    <td><a href="/edit_transaction/{{ .Id }}">{{ fmtDate .Date }}</a></td>
+    <td style="white-space: nowrap"><a href="/edit_transaction/{{ .Id }}">{{ fmtDate .Date }}</a></td>
     <td align="right">{{.Q}}</td>
     {{ $bal = add $bal .Q }}
     <td align="right">{{ fmtAmount $bal }}</td>
     <td align="right">{{ fmtAmount .Amount }}</td>
     <td align="right">{{ fmtAmount .Fees }}</td>
-    <td align="right">{{ fmtAmount (div (sub .Amount .Fees) .Q) }}
+    <td align="right">{{ (div (sub .Amount .Fees) .Q) | printf "%.3f" }}
   </tr>
   {{ end }}
 </table>
@@ -74,9 +74,9 @@
   <tbody>
   {{ range .prices }}
   <tr>
-    <td><a href="/edit_price/{{ .Id }}">{{ fmtDate .Date }}</a></td>
-    <td align="right">{{ fmtAmount .Price }}</td>
-    <td>{{ .Comments }}</td>
+    <td style="white-space: nowrap"><a href="/edit_price/{{ .Id }}">{{ fmtDate .Date }}</a></td>
+    <td align="right">{{ .Price | printf "%.3f" }}</td>
+    <td style="white-space: nowrap">{{ .Comments }}</td>
   </tr>
   {{ end }}
   </tbody>
