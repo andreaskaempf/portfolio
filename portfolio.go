@@ -3,7 +3,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"net/http"
 	"time"
 
@@ -104,7 +104,7 @@ func stockValue(sid int, d time.Time) float64 {
 	price := latestPriceAt(ts, d)
 
 	// If not in home currency, get exchange rate on that date
-	exchangeRate := 1.0 // will be 1 if already in home currency
+	/*exchangeRate := 1.0 // will be 1 if already in home currency
 	if stock.Currency != homeCurrency {
 		ts := TimeSeries{}
 		cur := getCurrencyCode(stock.Currency)
@@ -115,10 +115,10 @@ func stockValue(sid int, d time.Time) float64 {
 			ts = append(ts, TimeSeriesPoint{x.Date, x.Rate})
 		}
 		exchangeRate = latestPriceAt(ts, d)
-	}
+	}*/
 
 	// Return value of the stock
-	return price * exchangeRate
+	return price //* exchangeRate
 }
 
 // Units held of a stock on a certain date

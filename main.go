@@ -12,7 +12,7 @@ import (
 var menu = []string{"Portfolio", "Stocks", "Cash", "Currencies"}
 
 // List of currency codes (TODO: in database)
-var currencies = []string{"EUR", "USD", "GBP", "NZD", "AUD"}
+var currencies = []string{"EUR", "USD", "CHF", "GBP", "NZD", "AUD"}
 
 // List of cash transaction types
 var cashTypes = []string{"Deposit", "Withdrawal"}

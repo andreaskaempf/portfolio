@@ -17,27 +17,9 @@
 </p>
 
 <hr />
-<h2 class="subtitle">Dividends</h2>
-
-<table class="table is-striped is-bordered">
-  <thead>
-    <th>Date</th>
-    <th>Amount</th>
-    <th>Comments</th>
-  </thead>
-  <tbody>
-  {{ range .dividends }}
-  <tr>
-    <td style="white-space: nowrap"><a href="/edit_dividend/{{ .Id }}">{{ fmtDate .Date }}</a></td>
-    <td align="right">{{ fmtAmount .Amount }}</td>
-    <td align="right">{{ .Comments }}</td>
-  </tr>
-  {{ end }}
-</table>
-
-<hr />
 <h2 class="subtitle">Transaction History</h2>
 
+{{ if (gt (len .transactions) 0) }}
 <table class="table is-striped is-bordered">
   <thead>
     <th>Date</th>
@@ -61,6 +43,32 @@
   </tr>
   {{ end }}
 </table>
+{{ else }}
+<p>No transactions yet</p>
+{{ end }}
+
+<hr />
+<h2 class="subtitle">Dividends</h2>
+
+{{ if (gt (len .dividends) 0) }}
+<table class="table is-striped is-bordered">
+  <thead>
+    <th>Date</th>
+    <th>Amount</th>
+    <th>Comments</th>
+  </thead>
+  <tbody>
+  {{ range .dividends }}
+  <tr>
+    <td style="white-space: nowrap"><a href="/edit_dividend/{{ .Id }}">{{ fmtDate .Date }}</a></td>
+    <td align="right">{{ fmtAmount .Amount }}</td>
+    <td style="white-space: pre-wrap">{{ .Comments }}</td>
+  </tr>
+  {{ end }}
+</table>
+{{ else }}
+<p>No dividends yet</p>
+{{ end }}
 
 <hr />
 <h2 class="subtitle">Price History</h2>
