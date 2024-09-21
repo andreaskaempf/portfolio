@@ -136,7 +136,8 @@ type Price struct {
 	Id       int       // the id of this price record
 	Date     time.Time // the date for this price
 	Stock    int       // id of the stock this price is for
-	Price    float64   // price on this date, in the stock's currency
+	Price    float64   // price on this date, in our local currency
+	PriceX   float64   // price on this date, in the stock's currency
 	Comments string    // any comments
 }
 
@@ -149,8 +150,8 @@ func getPrice(pid int) *Price {
 
 	// Find price, return nil if not found
 	p := Price{}
-	q := "select id, stock_id, pdate, price, comments from price where id = $1"
-	err := db.QueryRow(q, pid).Scan(&p.Id, &p.Stock, &p.Date, &p.Price, &p.Comments)
+	q := "select id, stock_id, pdate, price, pricex, comments from price where id = $1"
+	err := db.QueryRow(q, pid).Scan(&p.Id, &p.Stock, &p.Date, &p.Price, &p.PriceX, &p.Comments)
 	if err != nil {
 		return nil
 	}
@@ -166,7 +167,7 @@ func getPrices(sid int) []Price {
 	defer db.Close()
 
 	// Execute query to get all prices for this stock, in date order
-	rows, err := db.Query("select id, pdate, price, comments from price where stock_id = $1 order by pdate", sid)
+	rows, err := db.Query("select id, pdate, price, pricex, comments from price where stock_id = $1 order by pdate", sid)
 	if err != nil {
 		panic("getPrices query: " + err.Error())
 	}
@@ -177,7 +178,7 @@ func getPrices(sid int) []Price {
 	var ds string // buffer for reading date
 	for rows.Next() {
 		p := Price{}
-		err := rows.Scan(&p.Id, &ds, &p.Price, &p.Comments)
+		err := rows.Scan(&p.Id, &ds, &p.Price, &p.PriceX, &p.Comments)
 		if err != nil {
 			panic("getPrices next: " + err.Error())
 		}
@@ -202,11 +203,11 @@ func addUpdatePrice(p *Price) {
 	// Attempt insert or update
 	var err error
 	if p.Id == 0 {
-		q := "insert into price(stock_id, pdate, price, comments) values ($1, $2, $3, $4)"
-		_, err = db.Exec(q, p.Stock, p.Date, p.Price, p.Comments)
+		q := "insert into price(stock_id, pdate, price, pricex, comments) values ($1, $2, $3, $4, $5)"
+		_, err = db.Exec(q, p.Stock, p.Date, p.Price, p.PriceX, p.Comments)
 	} else {
-		q := "update price set pdate = $1, price = $2, comments = $3 where id = $4"
-		_, err = db.Exec(q, p.Date, p.Price, p.Comments, p.Id)
+		q := "update price set pdate = $1, price = $2, pricex = $3, comments = $4 where id = $5"
+		_, err = db.Exec(q, p.Date, p.Price, p.PriceX, p.Comments, p.Id)
 	}
 
 	// Check for error

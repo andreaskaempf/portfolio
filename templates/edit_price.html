@@ -12,12 +12,19 @@
   <p><span class="label">Date:</span> 
     <input type="text" name="date" style="width: 10%;" value="{{.ds}}" /></p>
     
-  <p><span class="label">Price:</span> 
+  <p><span class="label">Price in {{ .home }}:</span> 
     <input type="text" name="price" style="width: 10%;" value="{{.p.Price}}" />
     (or total! to divide for unit price)</p>
     
+  {{ if (ne .stock.Currency .home )}}
+  <p><span class="label">Price in {{ .stock.Currency }}:</span> 
+    <input type="text" name="pricex" style="width: 10%;" value="{{.p.PriceX}}" />
+  </p>
+  {{ end }}
+  
   <p><span class="label">Comments:</span><br/>
     <textarea name="comments" style="width: 100%; height: 150px">{{.p.Comments}}</textarea></p>
+  
 
   <p><input type="submit" value="Save" class="button is-small is-primary" /></p>
 

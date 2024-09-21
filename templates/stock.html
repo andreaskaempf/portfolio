@@ -68,15 +68,23 @@
 <table class="table is-striped is-bordered">
   <thead>
     <th>Date</th>
-    <th>Price</th>
+    <th>Price {{ .home }}</th>
+    {{ if (ne .s.Currency .home )}}
+    <th>Price {{ .s.Currency }}</th>
+    {{ end}}
     <th>Comments</th>
   </thead>
   <tbody>
+  {{ $cur := .s.Currency }}
+  {{ $home := .home }}
   {{ range .prices }}
   <tr>
     <td style="white-space: nowrap"><a href="/edit_price/{{ .Id }}">{{ fmtDate .Date }}</a></td>
     <td align="right">{{ .Price | printf "%.3f" }}</td>
-    <td style="white-space: nowrap">{{ .Comments }}</td>
+    {{ if (ne $cur $home )}}
+      <td style="white-space: nowrap">{{ .PriceX | printf "%.3f" }}</td>
+    {{ end}}
+    <td>{{ .Comments }}</td>
   </tr>
   {{ end }}
   </tbody>

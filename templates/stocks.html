@@ -7,6 +7,7 @@
   <tr style="border: 1px solid #ccc">
     <th>Asset</th>
     <th align="right">Units</th>
+    <th align="right">Currency</th>
     <th align="right">Avg Unit Cost</th>
     <th align="right">Current Price</th>
     <th align="right">Current Value</th>
@@ -17,6 +18,7 @@
     <tr style="border: 1px solid #ccc">
       <td><a href="/stock/{{ .Stock.Id }}">{{ .Stock.Code }}</a> ({{ .Stock.Name }})</td>
       <td align="right">{{ fmtAmount .Units  }}</td>
+      <td align="right">{{ .Stock.Currency  }}</td>
       <td align="right">{{ .UnitCost | printf "%.3f" }}</td>
       <td align="right">{{ .CurPrice | printf "%.3f" }}</td>
       <td align="right">{{ fmtAmount .CurValue }}</td>
@@ -26,7 +28,7 @@
     {{ $totStocks = (add $totStocks .CurValue) }}
   {{ end }}
     <tr style="border: 1px solid #ccc; font-weight: bold">
-      <td colspan="4">Total value</td>
+      <td colspan="5">Total value</td>
       <td align="right">{{ fmtAmount $totStocks }}</td>
     </tr>
 </table>

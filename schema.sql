@@ -13,14 +13,15 @@ CREATE TABLE stock (
     name text, 
     currency text);
 create index stock_id on stock(id);
- create index stock_code on stock(code);
+create index stock_code on stock(code);
 
 -- A daily price for a stock
 CREATE TABLE price (
     id integer primary key, 
     stock_id integer,
     pdate date,
-    price float,
+    price float, -- in local currency (e.g., EUR)
+    pricex float, -- in stock's original currency (e.g., USD)
     comments text);
 create index price_id on price(id);
 create index price_stock_id on price(stock_id);

@@ -53,7 +53,7 @@ func showStock(c *gin.Context) {
 	// Show page
 	c.HTML(http.StatusOK, "stock.html",
 		gin.H{"s": s, "transactions": transactions, "units": units,
-			"prices": prices, "dividends": dividends,
+			"prices": prices, "dividends": dividends, "home": homeCurrency,
 			"menu": menu, "current": "Stocks"})
 }
 

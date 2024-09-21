@@ -4,6 +4,7 @@ package main
 
 import (
 	"strconv"
+	"strings"
 
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
@@ -11,6 +12,7 @@ import (
 
 // Returns -1 if could not be parsed
 func parseInt(s string) int {
+	s = strings.TrimSpace(s)
 	n, err := strconv.Atoi(s)
 	if err != nil {
 		return -1
@@ -21,6 +23,7 @@ func parseInt(s string) int {
 
 // Returns -1 if could not be parsed
 func parseFloat(s string) float64 {
+	s = strings.TrimSpace(s)
 	n, err := strconv.ParseFloat(s, 64)
 	if err != nil {
 		return -1

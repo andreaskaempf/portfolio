@@ -36,7 +36,7 @@ func editPrice(c *gin.Context) {
 			return
 		}
 		newPrice := 0.0 // TODO: default price sould be most recent one
-		p = Price{Id: 0, Date: lastTransDate, Stock: sid, Price: newPrice}
+		p = Price{Id: 0, Date: lastTransDate, Stock: sid, Price: newPrice, PriceX: 0.0}
 		p.Comments = "From statement"
 	} else { // get existing price
 		pp := getPrice(pid)
@@ -54,6 +54,7 @@ func editPrice(c *gin.Context) {
 	// Show the form to edit price
 	c.HTML(http.StatusOK, "edit_price.html",
 		gin.H{"p": p, "ds": formatDate(p.Date), "stock": stock,
+			"home": homeCurrency,
 			"menu": menu, "current": "Stocks"})
 }
 
@@ -107,12 +108,21 @@ func updatePrice(c *gin.Context) {
 		p.Price = parseFloat(price)
 	}
 
+	// Price in original currency, only relevant for foreign stocks,
+	// otherwise make same as price
+	pricex, ok := c.GetPostForm("pricex")
+	if ok { // only present on form for foreign stocks
+		p.PriceX = parseFloat(pricex)
+	} else {
+		p.PriceX = p.Price
+	}
+
 	// Some validation
-	if p.Price <= 0 {
+	if p.Price <= 0 || p.PriceX <= 0 {
 		c.String(http.StatusNotFound, "Price must be positive")
 		return
 	}
-	if p.Date.Year() < 2000 {
+	if !validDate(p.Date) {
 		c.String(http.StatusNotFound, "Invalid or missing date")
 		return
 	}
