@@ -15,7 +15,7 @@ import (
 func showCashPage(c *gin.Context) {
 
 	// Get cash transactions up to today
-	today := lastTransDate     //time.Now()
+	today := time.Now()
 	trans := getAllCash(today) // including "virtual" buy/sell
 
 	// TODO: get cash value today, just sum of table above
@@ -66,7 +66,7 @@ func editCash(c *gin.Context) {
 			return
 		}
 	} else {
-		t.Date = time.Now()
+		t.Date = lastTransDate
 		t.Type = cashTypes[0]
 	}
 

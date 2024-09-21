@@ -1,11 +1,16 @@
-/* All paragraphs */
+/* Styles for the portfolio management system */
+
 p {
 	margin: 12px 0;
 }
 
-/* Input label, fixed with */
+/* Inline field label, fixed width */
 .label {
 	width: 120px; 
 	display: inline-block; 
 	font-weight: bold;
+}
+
+textarea, input {
+	padding: 4px;
 }
