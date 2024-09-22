@@ -47,7 +47,7 @@ func main() {
 	r.GET("/", showPortfolio)
 	r.GET("/Portfolio", showPortfolio)
 
-	// Routes for stocks and prices
+	// Routes for stocks
 	r.GET("/Home", showStocks)
 	r.GET("/Stocks", showStocks)
 	r.GET("/stock/:id", showStock)
@@ -58,6 +58,7 @@ func main() {
 	// Routes for stock prices
 	r.GET("/edit_price/:pid", editPrice)
 	r.POST("/update_price", updatePrice)
+	r.GET("/get_prices/:sid", getPricesJSON)
 
 	// Routes for buy/sell transactions
 	r.GET("/edit_transaction/:tid", editTransaction)

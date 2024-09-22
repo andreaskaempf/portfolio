@@ -24,3 +24,35 @@ function openTab(evt, tabName) {
   	document.getElementById(tabName).style.display = "block";
   	evt.currentTarget.className += " is-active";
 }
+
+// Fetch prices and draw graph
+async function get_prices(sid) {
+	
+	try {
+    		// Get data
+      	const response = await fetch("/get_prices/" + sid);
+      	if (!response.ok) {
+        		throw new Error(`Response status: ${response.status}`);
+      	}
+
+      	// Parse JSON
+      	const data = await response.json();
+		
+      
+      	// Convert to lists of dates and values
+      	var dates = [], prices = [];
+      	for ( var i = 0; i < data.length; ++i ) {
+        		let d = data[i].Date;
+        		if ( d.length > 10 )   // Convert "2018-10-01T00:00:00Z" to just date
+          		d = d.substr(0, 10);
+        		dates.push(d);
+        		prices.push(data[i].Price);
+      	}
+      
+      	// Show graph
+      	lineGraph("#graph", dates, [prices], ["Price"], ["red"]);
+      
+    } catch (error) {
+      	console.error(error.message);
+    }
+}

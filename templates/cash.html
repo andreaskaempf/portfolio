@@ -14,7 +14,7 @@
     <th align="right">Deposit</th>
     <th align="right">Withdraw</th>
     <th align="right">Balance</th>
-    <th align="right">Comments</th>
+    <th>Comments</th>
   </tr>
   {{ range .transactions }}
     {{ $bal = (add $bal .Amount) }}
@@ -32,7 +32,7 @@
       <td align="right">{{ if (gt .Amount 0.0) }}{{ fmtAmount .Amount }}{{ end }}</td>
       <td align="right">{{ if (lt .Amount 0.0) }}{{ fmtAmount (mul .Amount -1) }}{{ end }}</td>
       <td align="right">{{ fmtAmount $bal }}</td>
-      <td align="right">{{ .Comments }}</td>
+      <td style="white-space: pre-wrap">{{ .Comments }}</td>
     </tr>
   {{ end }}
 </table>

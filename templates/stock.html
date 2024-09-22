@@ -18,6 +18,11 @@
 
 <br />
 
+<!-- Price graph -->
+
+<h2>Price Graph</h2>
+
+<div id="graph" style="width: 800px; height: 300px; margin-bottom: 50px; border: 1px solid #ccc"></div>
 
 <!-- Tabs -->
 
@@ -125,5 +130,12 @@
 <a href="/edit_price/0?sid={{.s.Id}}" class="button is-primary is-small">Add price</a>
 
 </div>
+
+<!-- Update graph -->
+<script language="JavaScript" type="text/javascript" src="/static/d3.js"></script>
+<script language="JavaScript" type="text/javascript" src="/static/graphs.js"></script>
+<script>
+  get_prices({{ .s.Id }});
+</script>
 
 {{ template "footer.html" .}}

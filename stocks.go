@@ -157,6 +157,22 @@ func delStock(c *gin.Context) {
 	}
 }
 
+// Get list of prices for a stock, for graph on the stock page
+func getPricesJSON(c *gin.Context) {
+
+	// Get stock
+	sid := parseInt(c.Param("sid"))
+	s := getStock(sid)
+	if s == nil {
+		c.String(http.StatusNotFound, "Stock not found")
+		return
+	}
+
+	// Get prices and return as JSON
+	prices := getPrices(sid)
+	c.IndentedJSON(http.StatusOK, prices)
+}
+
 //-----------------------------------------------------------------//
 //                      BUY/SELL TRANSACTIONS                      //
 //-----------------------------------------------------------------//
