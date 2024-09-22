@@ -3,7 +3,5 @@ go.sum
 portfolio
 python
 data.db
-graphs
-static/bulma-1.0.2.zip
 *.bak
 static/d3.js

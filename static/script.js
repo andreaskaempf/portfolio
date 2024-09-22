@@ -50,7 +50,7 @@ async function get_prices(sid) {
       	}
       
       	// Show graph
-      	lineGraph("#graph", dates, [prices], ["Price"], ["red"]);
+      	lineGraph("#graph", dates, [prices], [], ["#008"]);
       
     } catch (error) {
       	console.error(error.message);

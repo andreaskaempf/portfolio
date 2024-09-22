@@ -1,6 +1,6 @@
 // Line graphs using D3
 
-// Draw a line graph
+// Draw a time series graph, with date on X axis and any number of series on Y
 function lineGraph(div, dates, series, labels, colours) {
 
     // Empty the canvas
@@ -23,10 +23,8 @@ function lineGraph(div, dates, series, labels, colours) {
     // Append the svg object to the body of the page
     var svg = cvs
         .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("width", width)
+            .attr("height", height);
 
     // Function to parse a yyyy-mm-dd date
     var pd = d3.timeParse("%Y-%m-%d");
@@ -34,16 +32,17 @@ function lineGraph(div, dates, series, labels, colours) {
     // Add X axis --> it is a date format
     var x = d3.scaleTime()
         .domain(d3.extent(dates, function(d) { return pd(d); }))
-        .range([ 0, width ]);
+        .range([ margin.left, width - margin.right]);
     svg.append("g")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", "translate(" + 0 + "," + (height - margin.top) + ")")
         .call(d3.axisBottom(x));
 
     // Add Y axis
     var y = d3.scaleLinear()
         .domain([0, yMax])
-        .range([height, 0]);
+        .range([height - margin.top, margin.bottom]);
     svg.append("g")
+        .attr("transform", "translate(40,0)") // + margin.left + "," + (height - margin.top) + ")")
         .call(d3.axisLeft(y));
 
     // Add each line for the currently selected graph
@@ -61,7 +60,7 @@ function lineGraph(div, dates, series, labels, colours) {
 
     // Draw legend
     let xl = margin.left + width - 150,
-        yl = margin.top - 20;
+        yl = margin.top + 10;
     for ( let i = 0; i < labels.length; ++i ) {
         svg.append("line")
                 .attr("x1", xl).attr("x2", xl+20)

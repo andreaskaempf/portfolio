@@ -18,21 +18,27 @@
 
 <br />
 
-<!-- Price graph -->
 
-<h2>Price Graph</h2>
-
-<div id="graph" style="width: 800px; height: 300px; margin-bottom: 50px; border: 1px solid #ccc"></div>
 
 <!-- Tabs -->
 
 <nav class="tabs is-boxed">
   <ul>
-    <li class="tab is-active" onclick="openTab(event,'Prices')"><a>Prices</a></li>
+    <li class="tab is-active" onclick="openTab(event,'Graph')"><a>Graph</a></li>
+    <li class="tab" onclick="openTab(event,'Prices')"><a>Prices</a></li>
     <li class="tab" onclick="openTab(event,'Dividends')"><a>Dividends</a></li>
     <li class="tab" onclick="openTab(event,'Transactions')"><a>Transactions</a></li>
   </ul>
 </nav>
+
+<!-- Graph tab -->
+
+<div id="Graph" class="content-tab">
+
+<h2>Price Graph</h2>
+<div id="graph" style="width: 100%; height: 300px; margin-bottom: 50px;"></div>
+
+</div>
 
 <!-- Transactions -->
 
@@ -99,7 +105,7 @@
 </div>
 
 <!-- Prices -->
-<div id="Prices" class="content-tab">
+<div id="Prices" class="content-tab" style="display: none">
 
 <h2 class="subtitle">Price History</h2>
 
