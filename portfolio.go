@@ -3,7 +3,7 @@
 package main
 
 import (
-	//"fmt"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -50,14 +50,16 @@ func getPortfolio(d time.Time, heldNow bool) []Holding {
 	holdings := []Holding{}
 	for _, s := range getStocks() {
 
-		// Accumulate holdings and average cost
+		// Accumulate holdings and average cost, up to a certain date
 		var q, cost float64
 		for _, t := range getTransactions(s.Id) {
 			// Consider purchases before date, or sales after date
-			if t.Q > 0 && (sameDate(t.Date, d) || earlier(t.Date, d)) {
+			if later(t.Date, d) {
+				continue
+			} else if t.Q > 0 { // purchase
 				q += t.Q
 				cost += t.Amount - t.Fees
-			} else if t.Q < 0 && (sameDate(t.Date, d) || later(t.Date, d)) {
+			} else if t.Q < 0 { // sale
 				q += t.Q              // add negative to reduce balance
 				avgCost := cost / q   // average cost paid so far
 				cost -= avgCost * t.Q // ??? correct?
@@ -81,6 +83,7 @@ func getPortfolio(d time.Time, heldNow bool) []Holding {
 			h := Holding{Stock: s, Units: q, UnitCost: unitCost, CurPrice: curPrice,
 				CurValue: curValue, Dividends: totDividends, Return: pcntUp}
 			holdings = append(holdings, h)
+			fmt.Println(h)
 		}
 	}
 	return holdings
