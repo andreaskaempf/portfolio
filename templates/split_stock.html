@@ -1,0 +1,26 @@
+{{ template "header.html" . }}
+
+<h1 class="title">Split Stock</h1>
+
+<form action="/do_split" method="post">
+
+  <input type="hidden" name="id" value="{{.s.Id}}" />
+
+  <p><span class="label">Stock:</span> {{ .s.Code }} ({{ .s.Name }})</p>
+  <p><span class="label">Units held:</span> {{ .q | printf "%.3f" }}</p>
+  <p><span class="label">Current price:</span> {{ fmtAmount .p }}</p>
+  
+  <p><span class="label">Date of split:</span> 
+    <input type="text" name="date" style="width: 15%;"  value="{{ fmtDate .d }}" /></p>
+    
+  <p><span class="label">New units:</span> 
+    <input type="text" name="q" style="width: 15%;" /></p>
+    
+  <p><i>Note: an adjusted price will be created on the split date, based on the current price</i></p>
+  <br />
+
+  <p><input type="submit" value="Do split" class="button is-small is-primary" /></p>
+
+</form>
+
+{{ template "footer.html" . }}

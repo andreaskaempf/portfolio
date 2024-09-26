@@ -3,7 +3,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"net/http"
 	"time"
 
@@ -83,13 +83,13 @@ func getPortfolio(d time.Time, heldNow bool) []Holding {
 			h := Holding{Stock: s, Units: q, UnitCost: unitCost, CurPrice: curPrice,
 				CurValue: curValue, Dividends: totDividends, Return: pcntUp}
 			holdings = append(holdings, h)
-			fmt.Println(h)
 		}
 	}
 	return holdings
 }
 
-// Value of a stock on a date, in home currency
+// Value of a stock on a date, just uses the last price before
+// or on the date
 func stockValue(sid int, d time.Time) float64 {
 
 	// Get the stock
@@ -130,7 +130,6 @@ func unitsHeld(sid int, d time.Time) float64 {
 	for _, t := range getTransactions(sid) {
 		if !later(t.Date, d) {
 			q += t.Q
-
 		}
 	}
 	return q

@@ -48,6 +48,12 @@ func formatDate(d time.Time) string {
 	return d.Format("2006-01-02")
 }
 
+// Today's date
+// TODO: just the date parts
+func today() time.Time {
+	return time.Now()
+}
+
 // Get price on a certain date, using first date if before, last date if after,
 // most recent recorded price if between dates (i.e., don't interpolate).
 func latestPriceAt(ts TimeSeries, on time.Time) float64 {

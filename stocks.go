@@ -19,7 +19,6 @@ import (
 func showStocks(c *gin.Context) {
 
 	// Get a list of all stocks, including not held
-	//stocks := getStocks()
 	today := time.Now()
 	holdings := getPortfolio(today, false)
 
@@ -45,10 +44,7 @@ func showStock(c *gin.Context) {
 	dividends := getDividends(sid)
 
 	// Count up the number of units held
-	var units float64
-	for _, t := range transactions {
-		units += t.Q
-	}
+	units := unitsHeld(sid, today())
 
 	// Show page
 	c.HTML(http.StatusOK, "stock.html",
@@ -131,6 +127,87 @@ func saveStock(c *gin.Context) {
 	} else {
 		c.Redirect(http.StatusFound, fmt.Sprintf("/stock/%d", sid))
 	}
+}
+
+// Form to split stock
+func splitStock(c *gin.Context) {
+
+	// Get the stock (URL positional param)
+	sid := parseInt(c.Param("id"))
+	s := getStock(sid)
+	if sid <= 0 || s == nil {
+		c.String(http.StatusOK, "Stock not found")
+		return
+	}
+
+	// Get current quantity and price
+	d := today()
+	units := unitsHeld(sid, d)
+	price := stockValue(sid, d)
+
+	// Show the form to split stock
+	c.HTML(http.StatusOK, "split_stock.html",
+		gin.H{"s": s, "q": units, "p": price, "d": d,
+			"menu": menu, "current": "Stocks"})
+}
+
+// Execute stock split: creates a transaction to adjust the
+// quantity at zero price, and creates an adjusted price based
+// on current price
+func doSplit(c *gin.Context) {
+
+	// Get stock ID
+	sid_, ok := c.GetPostForm("id")
+	if !ok {
+		c.String(http.StatusNotFound, "doSplit: Missing stock ID")
+		return
+	}
+
+	// Get the stock
+	sid := parseInt(sid_)
+	s := getStock(sid)
+	if s == nil {
+		c.String(http.StatusNotFound, "doSplit: stock not found")
+		return
+	}
+
+	// Get quantity and date from form inputs
+	newQ_, _ := c.GetPostForm("q")
+	date_, _ := c.GetPostForm("date")
+	newQ := parseFloat(newQ_)
+	date := parseDate(date_)
+	if newQ < 1 || !validDate(date) {
+		c.String(http.StatusNotFound, "doSplit: invalid inputs")
+		return
+	}
+
+	// Get current quantity on date, calculate adjustment
+	curQ := unitsHeld(sid, date)
+	adj := newQ - curQ
+	if curQ == 0 || adj == 0.0 {
+		c.String(http.StatusNotFound, "doSplit: no change in units")
+		return
+	}
+
+	// Create transaction to adjust quantity, amount and fees are zero
+	// TODO: add comments to transaction
+	cmt := fmt.Sprintf("%.3f split on %s to %.3f => delta %.3f\n",
+		curQ, formatDate(date), newQ, adj)
+	fmt.Println(cmt)
+	t := Transaction{Stock: sid, Date: date, Q: adj}
+	addUpdateTransaction(&t)
+
+	// Create split-adjusted price
+	curP := stockValue(sid, date)
+	tVal := curP * curQ
+	newP := tVal / newQ
+	cmt = fmt.Sprintf("%.3f split on %s to %.3f : price %.3f => %.3f",
+		curQ, formatDate(date), newQ, curP, newP)
+	p := Price{Stock: sid, Date: date, Price: newP, Comments: cmt}
+	addUpdatePrice(&p)
+
+	// Go back to stocks page
+	c.Redirect(http.StatusFound, fmt.Sprintf("/stock/%d", sid))
 }
 
 // Delete stock: ask for confirmation first

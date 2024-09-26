@@ -53,6 +53,8 @@ func main() {
 	r.GET("/stock/:id", showStock)
 	r.GET("/edit_stock/:id", editStock)
 	r.POST("/update_stock", saveStock)
+	r.GET("/split_stock/:id", splitStock)
+	r.POST("/do_split", doSplit)
 	r.GET("/delete_stock/:id", delStock)
 
 	// Routes for stock prices
