@@ -56,6 +56,7 @@
     <th>Amount</th>
     <th>Fees</th>
     <th>Implied Price</th>
+    <th>Comments</th>
   </thead>
   <tbody>
   {{ $bal := 0.0 }}
@@ -68,6 +69,7 @@
     <td align="right">{{ fmtAmount .Amount }}</td>
     <td align="right">{{ fmtAmount .Fees }}</td>
     <td align="right">{{ (div (sub .Amount .Fees) .Q) | printf "%.3f" }}
+    <td>{{ .Comments }}</td>
   </tr>
   {{ end }}
 </table>

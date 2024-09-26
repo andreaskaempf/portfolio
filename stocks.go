@@ -191,10 +191,9 @@ func doSplit(c *gin.Context) {
 
 	// Create transaction to adjust quantity, amount and fees are zero
 	// TODO: add comments to transaction
-	cmt := fmt.Sprintf("%.3f split on %s to %.3f => delta %.3f\n",
-		curQ, formatDate(date), newQ, adj)
-	fmt.Println(cmt)
-	t := Transaction{Stock: sid, Date: date, Q: adj}
+	cmt := fmt.Sprintf("%s: %.3f split to %.3f => delta %.3f\n",
+		formatDate(date), curQ, newQ, adj)
+	t := Transaction{Stock: sid, Date: date, Q: adj, Comments: cmt}
 	addUpdateTransaction(&t)
 
 	// Create split-adjusted price
@@ -326,16 +325,17 @@ func saveTransaction(c *gin.Context) {
 
 	// Update the stock with the form inputs
 	ds, _ := c.GetPostForm("date")
-	q, _ := c.GetPostForm("q")
-	amount, _ := c.GetPostForm("amount")
-	fees, _ := c.GetPostForm("fees")
-
-	// Convert and validate fields
 	t.Date = parseDate(ds)
+	q, _ := c.GetPostForm("q")
 	t.Q = parseFloat(q)
+	amount, _ := c.GetPostForm("amount")
 	t.Amount = parseFloat(amount)
+	fees, _ := c.GetPostForm("fees")
 	t.Fees = parseFloat(fees)
-	if t.Date.Year() < 2000 || t.Q == 0 || t.Amount <= 0 || t.Fees < 0 {
+	t.Comments, _ = c.GetPostForm("comments")
+
+	// Convert and validate fields, not that zero amount is allowed because of stock splits
+	if t.Date.Year() < 2000 || t.Q <= 0 || t.Amount < 0 || t.Fees < 0 {
 		c.String(http.StatusOK, "Invalid inputs")
 		return
 	}

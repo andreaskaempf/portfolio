@@ -225,12 +225,13 @@ func addUpdatePrice(p *Price) {
 // TODO: How do we back out the currency value vs. price?
 // TODO: Add comments
 type Transaction struct {
-	Id     int       // ID of the transaction
-	Stock  int       // ID of the stock
-	Date   time.Time // the date for this transaction
-	Q      float64   // the number of shares
-	Amount float64   // the total amount paid, including fees
-	Fees   float64   // commission or fees paid
+	Id       int       // ID of the transaction
+	Stock    int       // ID of the stock
+	Date     time.Time // the date for this transaction
+	Q        float64   // the number of shares
+	Amount   float64   // the total amount paid, including fees
+	Fees     float64   // commission or fees paid
+	Comments string    // any comments
 }
 
 // Get a list of all transactions, for a stock if argument is nonzero
@@ -244,9 +245,9 @@ func getTransactions(sid int) []Transaction {
 	var err error
 	var rows *sql.Rows
 	if sid > 0 {
-		rows, err = db.Query("select id, stock_id, tdate, q, amount, fees from trans where stock_id == $1 order by tdate", sid)
+		rows, err = db.Query("select id, stock_id, tdate, q, amount, fees, comments from trans where stock_id == $1 order by tdate", sid)
 	} else {
-		rows, err = db.Query("select id, stock_id, tdate, q, amount, fees from trans order by tdate")
+		rows, err = db.Query("select id, stock_id, tdate, q, amount, fees, comments from trans order by tdate")
 	}
 	if err != nil {
 		panic("getTransactions query: " + err.Error())
@@ -258,7 +259,7 @@ func getTransactions(sid int) []Transaction {
 	for rows.Next() {
 		t := Transaction{}
 		var ds string
-		err := rows.Scan(&t.Id, &t.Stock, &ds, &t.Q, &t.Amount, &t.Fees)
+		err := rows.Scan(&t.Id, &t.Stock, &ds, &t.Q, &t.Amount, &t.Fees, &t.Comments)
 		if err != nil {
 			panic("getTransactions next: " + err.Error())
 		}
@@ -283,8 +284,8 @@ func getTransaction(tid int) *Transaction {
 	// Find and read transaction, return nil if not found
 	t := Transaction{}
 	var ds string
-	q := "select id, stock_id, tdate, q, amount, fees from trans where id = $1"
-	err := db.QueryRow(q, tid).Scan(&t.Id, &t.Stock, &ds, &t.Q, &t.Amount, &t.Fees)
+	q := "select id, stock_id, tdate, q, amount, fees, comments from trans where id = $1"
+	err := db.QueryRow(q, tid).Scan(&t.Id, &t.Stock, &ds, &t.Q, &t.Amount, &t.Fees, &t.Comments)
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -304,11 +305,11 @@ func addUpdateTransaction(t *Transaction) {
 	// Attempt insert or update
 	var err error
 	if t.Id == 0 {
-		q := "insert into trans(stock_id, tdate, q, amount, fees) values ($1, $2, $3, $4, $5)"
-		_, err = db.Exec(q, t.Stock, formatDate(t.Date), t.Q, t.Amount, t.Fees)
+		q := "insert into trans(stock_id, tdate, q, amount, fees, comments) values ($1, $2, $3, $4, $5, $6)"
+		_, err = db.Exec(q, t.Stock, formatDate(t.Date), t.Q, t.Amount, t.Fees, t.Comments)
 	} else {
-		q := "update trans set tdate = $1, q = $2, amount = $3, fees = $4 where id = $5"
-		_, err = db.Exec(q, formatDate(t.Date), t.Q, t.Amount, t.Fees, t.Id)
+		q := "update trans set tdate = $1, q = $2, amount = $3, fees = $4, comments = $5 where id = $6"
+		_, err = db.Exec(q, formatDate(t.Date), t.Q, t.Amount, t.Fees, t.Comments, t.Id)
 	}
 
 	// Check for error
