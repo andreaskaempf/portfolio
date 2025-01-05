@@ -118,8 +118,12 @@ func updatePrice(c *gin.Context) {
 	}
 
 	// Some validation
-	if p.Price <= 0 || p.PriceX <= 0 {
-		c.String(http.StatusNotFound, "Price must be positive")
+	if p.Price < 0 || p.PriceX < 0 {
+		c.String(http.StatusNotFound, "Prices must be positive")
+		return
+	}
+	if p.Price == 0 && p.PriceX == 0 {
+		c.String(http.StatusNotFound, "A positive price must be provided")
 		return
 	}
 	if !validDate(p.Date) {

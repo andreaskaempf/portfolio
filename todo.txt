@@ -1,4 +1,3 @@
-Price graph: fix margins
 Warning if static/d3.js is missing, same for bulma?
 Holding page: show stocks held, current value, ROI of stock and total
 Filter portfolio, cash for particular date
@@ -7,6 +6,10 @@ Different accounts for same user
 Date picker, +/- to increment date
 Prevent duplicate prices and rates for same day
 Remove currency table, but show currency page with inferred rates
+Cash: fees, taxes
+Portfolio value graph, pie graph
+Cards for stocks: price trajectory, return, annualized, components (stock, dividends, currency)
+Show prices before split as dotted line
 
 DONE:
 Align input fields
@@ -14,3 +17,4 @@ Cash: deposit/withdraw, buy/sell, dividends
 Format prices to 2 decimals
 Highlight current menu item
 Prices to 3 decimal points
+Price graph: fix margins

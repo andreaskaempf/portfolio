@@ -131,7 +131,7 @@
     {{ if (ne $cur $home )}}
       <td style="white-space: nowrap">{{ .PriceX | printf "%.3f" }}</td>
     {{ end}}
-    <td>{{ .Comments }}</td>
+    <td style="white-space: pre-wrap">{{ .Comments }}</td>
   </tr>
   {{ end }}
   </tbody>
